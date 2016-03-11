@@ -975,11 +975,11 @@ $ dds-topology --activate
   <property id="SamplerPort" />
 
   <decltask id="Sampler">
-    <exe reachable="false">runSampler --taskIndex %taskIndex%</exe>
+    <exe reachable="false">runSampler --id sampler1 --config-json-file examples/tutorial-1/config.json</exe>
   </decltask>
 
   <decltask id="Sink">
-    <exe reachable="false">runSink </exe>
+    <exe reachable="false">runSink --id sink1 --config-json-file examples/tutorial-1/config.json</exe>
   </decltask>
 
   <main id="main">
