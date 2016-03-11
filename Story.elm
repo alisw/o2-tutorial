@@ -929,7 +929,24 @@ $ dds-submit --rms ssh -n 1
 """,
               Append """
 $ dds-info -n
+2
 $ dds-info -l
+ -------------->>> 17509308862284875538
+Host Info: ktf@pb-d-128-141-47-76.cern.ch:/private/var/folders/gg/xldx68351cd9k1rpb_0bhbc80000gn/T/dds-agents/wn/
+Agent pid: 32012
+Agent UI port: 56028
+Agent startup time: 4.904 s
+State: idle
+
+Task ID: no task is assigned
+ -------------->>> 924277658288400321
+Host Info: ktf@pb-d-128-141-47-76.cern.ch:/private/var/folders/gg/xldx68351cd9k1rpb_0bhbc80000gn/T/dds-agents/wn_1/
+Agent pid: 32073
+Agent UI port: 56030
+Agent startup time: 7.411 s
+State: idle
+
+Task ID: no task is assigned
 """,
               Append """
 $ dds-topology --set $DDS_ROOT/tutorials/tutorial1/tutorial1_topo.xml
