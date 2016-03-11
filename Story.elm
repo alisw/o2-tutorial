@@ -296,10 +296,9 @@ void AliceO2TutorialSampler::Run()
 
 char *text = strdup("Hello world");
 
-std::unique_ptr<FairMQMessage> msg(
-  fTransportFactory->CreateMessage(text, strlen(text)));
+std::unique_ptr<FairMQMessage> msg(NewMessage(text, strlen(text)));
 
-fChannels.at("data-out").at(0).Send(msg);
+Send(msg, "data");
 
 ...
 """, Single """
@@ -318,12 +317,11 @@ void AliceO2TutorialSampler::Run()
 
     char *text = strdup("Hello world");
 
-    std::unique_ptr<FairMQMessage> msg(
-      fTransportFactory->CreateMessage(text, strlen(text)));
+    std::unique_ptr<FairMQMessage> msg(NewMessage(text, strlen(text)));
 
     LOG(INFO) << "Sending \\"" << text << "\\"";
 
-    fChannels.at("data-out").at(0).Send(msg);
+    Send(msg, "data");
   }
 }
 """]
@@ -368,9 +366,9 @@ class AliceO2TutorialSink : public FairMQDevice
       filename = "examples/tutorial-1/AliceO2TutorialSink.cxx",
       content = [Single """
 ...
-unique_ptr<FairMQMessage> msg(fTransportFactory->CreateMessage());
+unique_ptr<FairMQMessage> msg(NewMessage());
 
-if (fChannels.at("data-in").at(0).Receive(msg) >= 0)
+if (Receive(msg, "data") >= 0)
 {
     LOG(INFO) << "Received message: \\""
               << string(static_cast<char*>(msg->GetData()),
@@ -388,9 +386,9 @@ void AliceO2TutorialSink::Run()
 {
     while (CheckCurrentState(RUNNING))
     {
-        unique_ptr<FairMQMessage> msg(fTransportFactory->CreateMessage());
+        unique_ptr<FairMQMessage> msg(NewMessage());
 
-        if (fChannels.at("data-in").at(0).Receive(msg) >= 0)
+        if (Receive(msg, "data") >= 0)
         {
             LOG(INFO) << "Received message: \\""
                       << string(static_cast<char*>(msg->GetData()),
@@ -720,7 +718,7 @@ $ vim examples/tutorial-1/config.json
 "id": "sampler1",
 "channel":
 {
-    "name": "data-out",
+    "name": "data",
     "socket":
     {
         "type": "push",
@@ -740,7 +738,7 @@ $ vim examples/tutorial-1/config.json
             "id": "sampler1",
             "channel":
             {
-                "name": "data-out",
+                "name": "data",
                 "socket":
                 {
                     "type": "push",
@@ -758,7 +756,7 @@ $ vim examples/tutorial-1/config.json
             "id": "sink1",
             "channel":
             {
-                "name": "data-in",
+                "name": "data",
                 "socket":
                 {
                     "type": "pull",
@@ -806,7 +804,7 @@ $ runSampler --id sampler1 \\
 [DEBUG] Found device id 'sampler1' in JSON input
 [DEBUG] Found device id 'sink1' in JSON input
 [DEBUG] [node = device]   id = sampler1
-[DEBUG]        [node = channel]   name = data-out
+[DEBUG]        [node = channel]   name = data
 [DEBUG]                [node = socket]   socket index = 1
 [DEBUG]                        type        = push
 [DEBUG]                        method      = bind
@@ -815,13 +813,13 @@ $ runSampler --id sampler1 \\
 [DEBUG]                        rcvBufSize  = 1000
 [DEBUG]                        rateLogging = 0
 [DEBUG] ---- Channel-keys found are :
-[DEBUG] data-out
+[DEBUG] data
 [INFO] PID: 41567
 [DEBUG] Using ZeroMQ library, version: 4.1.3
 [STATE] Entering INITIALIZING DEVICE state
-[DEBUG] Validating channel "data-out[0]"... VALID
-[DEBUG] Initializing channel data-out[0] (push)
-[DEBUG] Binding channel data-out[0] on tcp://*:5555
+[DEBUG] Validating channel "data[0]"... VALID
+[DEBUG] Initializing channel data[0] (push)
+[DEBUG] Binding channel data[0] on tcp://*:5555
 [STATE] Entering DEVICE READY state
 [STATE] Entering INITIALIZING TASK state
 [STATE] Entering READY state
@@ -855,7 +853,7 @@ $ runSink --id sink1 \\
 [DEBUG] Found device id 'sampler1' in JSON input
 [DEBUG] Found device id 'sink1' in JSON input
 [DEBUG] [node = device]   id = sink1
-[DEBUG]        [node = channel]   name = data-in
+[DEBUG]        [node = channel]   name = data
 [DEBUG]                [node = socket]   socket index = 1
 [DEBUG]                        type        = pull
 [DEBUG]                        method      = connect
@@ -864,13 +862,13 @@ $ runSink --id sink1 \\
 [DEBUG]                        rcvBufSize  = 1000
 [DEBUG]                        rateLogging = 0
 [DEBUG] ---- Channel-keys found are :
-[DEBUG] data-in
+[DEBUG] data
 [INFO] PID: 56198
 [DEBUG] Using ZeroMQ library, version: 4.1.3
 [STATE] Entering INITIALIZING DEVICE state
-[DEBUG] Validating channel "data-in[0]"... VALID
-[DEBUG] Initializing channel data-in[0] (pull)
-[DEBUG] Connecting channel data-in[0] to tcp://localhost:5555
+[DEBUG] Validating channel "data[0]"... VALID
+[DEBUG] Initializing channel data[0] (pull)
+[DEBUG] Connecting channel data[0] to tcp://localhost:5555
 [STATE] Entering DEVICE READY state
 [STATE] Entering INITIALIZING TASK state
 [STATE] Entering READY state
