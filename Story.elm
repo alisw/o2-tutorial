@@ -23,7 +23,7 @@ what we will use as a workarea. Notice that we set the `WORK_DIR`
 environment variable to it.
 """]},
     pane = ShellPane { content = [Single "\n$\n", Reuse, Replace """
-$ mkdir -p ~/alice 
+$ mkdir -p ~/alice
 
 $ cd ~/alice
 
@@ -92,9 +92,9 @@ installed.""",
   Append """Alibuild builds each package in a separate hierarcy
 `sw/<architecture>/<package>/<version>` where:
 - `<architecture>` is the architecture of your platform (e.g.
-`osx_x86-64`, `slc7_x86-64` or `ubuntu1510_x86-64`).""", 
+`osx_x86-64`, `slc7_x86-64` or `ubuntu1510_x86-64`).""",
   Append """
-- `<package>` is the name of the package.""", 
+- `<package>` is the name of the package.""",
   Append """
 - `<version>` is the version of the package.
 """]},
@@ -113,7 +113,7 @@ DDS                   HepMC                 ZeroMQ                glog          
 FairRoot              MPFR                  boost                 lhapdf                xalienfs
 """, ReplaceLast """
 $ ls sw/osx_x86-64
-...                   AliPhysics            AliRoot               O2 ...              
+...                   AliPhysics            AliRoot               O2 ...
 
 $ ls sw/osx_x86-64/O2
 latest   master-1 master-2
@@ -267,7 +267,7 @@ it in the correct place. Notice the use of the `LOG(INFO)` facility to
 handle debug / informative messages and the fact that we artificially
 limit the rate to one per second.
 """, Append """
-Once we have implemented the sampler class we need to actually create an 
+Once we have implemented the sampler class we need to actually create an
 executable which instanciates our device.
 """]},
     leftPane = ShellPane {
@@ -279,7 +279,7 @@ $ vim examples/tutorial-1/AliceO2TutorialSampler.cxx
    },
     rightPane = EditorPane {
       filename = "examples/tutorial-1/AliceO2TutorialSampler.cxx",
-      content = [Single "", Single """ 
+      content = [Single "", Single """
 ...
 
 void AliceO2TutorialSampler::Run()
@@ -341,7 +341,7 @@ In this case the implementation will simply receive the messages and
 print them out. This is done by invoking the `Receive()` method of the
 channel.
 
-""", Append """ The rest of the code is similar to the Sampler one, with 
+""", Append """ The rest of the code is similar to the Sampler one, with
 the inner loop for the `RUNNING` state.
 
 """]},
@@ -457,7 +457,7 @@ int main(int argc, char** argv)
   }
   return 0;
 }
-""", Single """ 
+""", Single """
 ...
 
 std::string filename = config.GetValue<std::string>("config-json-file");
@@ -617,7 +617,7 @@ driver processes.
 """, Append """In order to build you need to move to the
 `sw/BUILD/O2-latest/O2` directory and type make.
 """]},
-    leftPane = ShellPane { 
+    leftPane = ShellPane {
       content = [Single """
 $ vim examples/tutorial-1/CMakeLists.txt
 """,Append """
@@ -635,38 +635,38 @@ $ make -j 10 install
 [ 96%] Built target runSink
 [ 97%] Built target libtestits.rootmap
 [100%] Built target testits
-$ 
+$
 """, Replace """
-$ which runSampler 
+$ which runSampler
 /Users/me/alice/sw/osx_x86-64/O2/master-1/bin/runSampler
 $ which runSink
 /Users/me/alice/sw/osx_x86-64/O2/master-1/bin/runSink
 """],
     },
-    rightPane = EditorPane { 
+    rightPane = EditorPane {
       filename = "examples/tutorial-1/CMakeLists.txt",
       content = [Single """
 include_directories(
   ${FAIRROOT_ROOT}/include
   ${Boost_INCLUDE_DIR}
-  ${FAIRROOT_INCLUDE_DIR} 
+  ${FAIRROOT_INCLUDE_DIR}
   ${CMAKE_SOURCE_DIR}/examples/tutorial-1
 )
 
 link_directories(
   ${Boost_LIBRARY_DIRS}
-  ${FAIRROOT_LIBRARY_DIR} 
+  ${FAIRROOT_LIBRARY_DIR}
 )
 
 add_executable(runSink runSink.cxx AliceO2TutorialSink.cxx)
-target_link_libraries(runSink FairMQ 
+target_link_libraries(runSink FairMQ
                               boost_log
                               boost_thread
                               boost_system
                               boost_program_options
                               fairmq_logger)
 add_executable(runSampler runSampler.cxx AliceO2TutorialSampler.cxx)
-target_link_libraries(runSampler FairMQ 
+target_link_libraries(runSampler FairMQ
                                  boost_log
                                  boost_thread
                                  boost_system
@@ -679,13 +679,13 @@ install(TARGETS runSampler runSink
   },
 
   TwoPanesStep {
-    header = HeaderPane { content = [Single """## Configuration 
+    header = HeaderPane { content = [Single """## Configuration
 
-Now that we have two devices, we need run them and make sure they are   
+Now that we have two devices, we need run them and make sure they are
 configured correctly so that they can talk to each other. This is done via a
 JSON based configuration.
 """, Replace """## Configuration
-At the toplevel the configuration has the following structure, 
+At the toplevel the configuration has the following structure,
 where there is one `device` stanza for each device we want to run (two
 in our case, one for the sampler and one for the sink).
 """, Replace """## Configuration
@@ -693,7 +693,7 @@ At minimum, each of the stanzas will have to specify a unique id for the
 device and the details about its channels, making sure they correspond
 to what is being specified in the C++ code.
 """]},
-    leftPane = ShellPane { 
+    leftPane = ShellPane {
       content = [Single """
 $ vim examples/tutorial-1/config.json
 """],
@@ -776,13 +776,13 @@ $ vim examples/tutorial-1/config.json
 
   TwoPanesStep {
       header = HeaderPane { content = [Single """
-## Running 
+## Running
 
 We can finally run our applications. Simply pass the configuration when
 invoking them on the command line.
-""", Append """Notice how we also need to provide the id of the device on the command 
+""", Append """Notice how we also need to provide the id of the device on the command
 line so that it's configuration can be picked up from file."""]},
-      leftPane = ShellPane { 
+      leftPane = ShellPane {
         content = [
       Single """
 $ runSampler --id sampler1 \\
@@ -837,7 +837,7 @@ $ runSampler --id sampler1 \\
 $ runSink --id sink1 \\
           --config-json-file examples/tutorial-1/config.json
 """,
-    Reuse, 
+    Reuse,
     Append """
 [STATE] Entering FairMQ state machine                                                        [250/371]
 [INFO] *************************************************************************************
@@ -883,7 +883,8 @@ $ runSink --id sink1 \\
     }
   },
   SinglePaneStep {
-    header = HeaderPane { content = [ Single """ ## Using DDS (Incomplete)
+    header = HeaderPane { content = [ Single """
+## Using DDS (Incomplete)
 Using the configuration file and mapping different ports
 and applications can become complex, especially if you
 plan to run your software in a distributed manner, on a
@@ -893,7 +894,7 @@ easy way to do deployments which range from a single host to a whole
 cluster.
     """, Replace """ ## Using DDS (Incomplete)
 First of all make sure DDS is available in your installation.
-""", 
+""",
   Append """
 Then we can start the DDS commander via `dds-server` which will
 take care managing your topology.
@@ -902,21 +903,21 @@ take care managing your topology.
 You can then start the agent using `dds-submit`.
 """,
   Append """
-You can check how many agents you have available by running `dds-info -n` and 
+You can check how many agents you have available by running `dds-info -n` and
 `dds-info -l`.
 """
   ]},
     pane = ShellPane { content = [
              Single """
-""", 
+""",
              Single """
 $ pushd $DDS_ROOT ; source DDS_env.sh ; popd
-$ which dds-server 
+$ which dds-server
 
 /Users/me/alice/sw/osx_x86-64/DDS/master-1/bin/dds-server
-""", 
+""",
               Append """
-$ dds-server start -s
+$ dds-server start
 Checking availability of WN bin of the local system...
 found compatible WN bin: dds-wrk-bin-1.1.21.g93c122a-Darwin-universal.tar.gz
 Starting DDS commander...
@@ -925,14 +926,14 @@ DDS commander server: 18733
 ------------------------
 """,
               Append """
-$ dds-submit --rms ssh -n 1
+$ dds-submit --rms ssh -n 2
 """,
               Append """
 $ dds-info -n
 2
 $ dds-info -l
  -------------->>> 17509308862284875538
-Host Info: ktf@pb-d-128-141-47-76.cern.ch:/private/var/folders/gg/xldx68351cd9k1rpb_0bhbc80000gn/T/dds-agents/wn/
+Host Info: me@mycomputer:/tmp/dds-agents/wn_0
 Agent pid: 32012
 Agent UI port: 56028
 Agent startup time: 4.904 s
@@ -940,23 +941,56 @@ State: idle
 
 Task ID: no task is assigned
  -------------->>> 924277658288400321
-Host Info: ktf@pb-d-128-141-47-76.cern.ch:/private/var/folders/gg/xldx68351cd9k1rpb_0bhbc80000gn/T/dds-agents/wn_1/
+Host Info: me@mycomputer:/tmp/dds-agents/wn_1
 Agent pid: 32073
 Agent UI port: 56030
 Agent startup time: 7.411 s
 State: idle
 
 Task ID: no task is assigned
+"""]}
+  },
+  TwoPanesStep {
+    header = HeaderPane {content = [Single """
+## Using DDS (incomplete)
+
+Now that you have DDS working we need to define the configuration file
+for the topology.
+"""]},
+    leftPane = ShellPane { content = [Single """
+$
 """,
-              Append """
-$ dds-topology --set $DDS_ROOT/tutorials/tutorial1/tutorial1_topo.xml
+    Replace """
+$ dds-topology --set examples/tutorial-1/topology.xml
+dds-topology: Contacting DDS commander on pb-d-128-141-47-76.cern.ch:20001  ...
+dds-topology: Connection established.
+dds-topology: Requesting server to set a new topology...
 """,
-              Append """
+    Append """
 $ dds-topology --activate
 """
- ]}
-  },
+  ]},
+    rightPane = EditorPane { content = [Single """
+<topology id="Tutorial">
+  <property id="SamplerPort" />
 
+  <decltask id="Sampler">
+    <exe reachable="false">runSampler --taskIndex %taskIndex%</exe>
+  </decltask>
+
+  <decltask id="Sink">
+    <exe reachable="false">runSink </exe>
+  </decltask>
+
+  <main id="main">
+    <task>Sampler</task>
+    <task>Sink</task>
+  </main>
+</topology>
+    """],
+      filename = "examples/tutorial-1/topology.xml"
+    }
+  },
   SinglePaneStep {
       header = HeaderPane { content = [Single """## Final words
 In this tutorial we have seens how to setup your work environment,
@@ -967,7 +1001,7 @@ tutorials:
 <https://github.com/FairRootGroup/FairRoot/tree/master/examples>
 
 """]},
-      pane = ShellPane { 
+      pane = ShellPane {
         content = [Single """
   """],
     }
