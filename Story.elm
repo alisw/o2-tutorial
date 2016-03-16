@@ -19,7 +19,7 @@ their deployment using DDS.
 **Now lets get started!**
 """, Append """
 First of all this tutorial assumes you are in `~/alice` and that's
-what we will use as a workarea. Notice that we set the `WORK_DIR`
+what we will use as a workarea. Notice that we set the `WORKAREA`
 environment variable to it.
 """]},
     pane = ShellPane { content = [Single "\n$\n", Reuse, Replace """
@@ -30,7 +30,7 @@ $ cd ~/alice
 $ pwd
 /Users/me/alice
 
-$ export WORK_DIR=$PWD
+$ export WORKAREA=$PWD
 """] }
   },
 
@@ -143,7 +143,7 @@ bin            etc            include        lib            relocate-me.sh share
 $ ls $PWD/sw/osx_x86-64/O2/latest/etc/profile.d/init.sh
 /Users/me/alice/sw/osx_x86-64/O2/latest/etc/profile.d/init.sh
 """, Append """
-$ WORK_DIR=$PWD/sw source sw/osx_x86-64/O2/latest/etc/profile.d/init.sh
+$ WORK_DIR=$WORKAREA/sw source sw/osx_x86-64/O2/latest/etc/profile.d/init.sh
 """, Append """
 $ which testFlp
 /Users/me/alice/sw/osx_x86-64/O2/master-1/bin/testFlp
