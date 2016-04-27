@@ -71,7 +71,7 @@ $
 $ git clone https://github.com/alisw/alibuild
 """,
                   Append """
-$ git clone -b IB/v5-06/next https://github.com/alisw/alidist
+$ git clone -b IB/v5-08/next https://github.com/alisw/alidist
 """,              Append """
 $ git clone -b dev https://github.com/AliceO2Group/AliceO2 O2
 """,
