@@ -68,15 +68,15 @@ You can build the software by issuing the `aliBuild build` command.
 $
 """,
                   Single """
-$ git clone https://github.com/alisw/alibuild
+$ pip install --upgrade aliBuild
 """,
                   Append """
-$ git clone -b IB/v5-08/next https://github.com/alisw/alidist
+$ git clone -b IB/v5-08/o2 https://github.com/alisw/alidist
 """,              Append """
 $ git clone -b dev https://github.com/AliceO2Group/AliceO2 O2
 """,
                   Append """
-$ alibuild/aliBuild build O2
+$ aliBuild build O2
 """
   ]}
   },
@@ -131,8 +131,11 @@ bin            etc            include        lib            relocate-me.sh share
 
 Once we have our O2 software built, we need to set up the environment in order to run O2 executables.
 """, Append """
-For each of the packages it builds, alibuild creates an `init.sh` file in `<package>`/etc/init.sh which
-once sourced will set up all the required paths for the package itself and its dependencies.
+For each of the packages it builds, alibuild creates a modulefile which can be
+loaded via `alienv`, just like you are used to on lxplus or on the Grid. You
+can use `alienv q` to list the available packages.
+""", Append """ You can use `alienv load` to load the environment for a given
+package and all its dependencies.
 """, Append """
 You can verify you have the correct environment by looking for some of the pre-built O2 utilities.
 """]},
@@ -140,10 +143,9 @@ You can verify you have the correct environment by looking for some of the pre-b
 $ ls sw/osx_x86-64/O2/latest
 bin            etc            include        lib            relocate-me.sh share
 """, Append """
-$ ls $PWD/sw/osx_x86-64/O2/latest/etc/profile.d/init.sh
-/Users/me/alice/sw/osx_x86-64/O2/latest/etc/profile.d/init.sh
+$ alienv q
 """, Append """
-$ WORK_DIR=$WORKAREA/sw source sw/osx_x86-64/O2/latest/etc/profile.d/init.sh
+$ alienv load O2/latest
 """, Append """
 $ which testFlp
 /Users/me/alice/sw/osx_x86-64/O2/master-1/bin/testFlp
