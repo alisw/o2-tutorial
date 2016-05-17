@@ -206,7 +206,7 @@ all the required sources.
 
 """]},
     pane = ShellPane {content = [ Single """
-$ cd O2
+$ cd $WORKAREA/O2
 $ mkdir -p examples/tutorial-1
 """] }
   },
@@ -223,7 +223,7 @@ the device.
 
 """]},
     leftPane = ShellPane {content = [Single """
-$ cd O2
+$ cd $WORKAREA/O2
 $ mkdir -p examples/tutorial-1
 $ vim examples/tutorial-1/AliceO2TutorialSampler.h
 """]},
@@ -623,7 +623,7 @@ driver processes.
       content = [Single """
 $ vim examples/tutorial-1/CMakeLists.txt
 """,Append """
-$ cd sw/BUILD/O2-latest/O2
+$ cd $WORKAREA/sw/BUILD/O2-latest/O2
 $ make -j 10 install
 ...
 [ 73%] Built target aliceHLTEventSampler
