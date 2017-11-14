@@ -6,6 +6,7 @@
   "dependencies": {
     "css-loader": "^0.23.1",
     "elm-webpack-loader": "^3.0.3",
+    "elm-upgrade": "^0.18.7",
     "file-loader": "^0.9.0",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
