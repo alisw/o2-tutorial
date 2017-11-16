@@ -77,10 +77,7 @@ $
 $ pip install --upgrade aliBuild
 """
                     , Append """
-$ git clone -b IB/v5-08/o2 https://github.com/alisw/alidist
-"""
-                    , Append """
-$ git clone -b dev https://github.com/AliceO2Group/AliceO2 O2
+$ aliBuild init O2@dev
 """
                     , Append """
 $ aliBuild build O2

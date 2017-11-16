@@ -1,14 +1,16 @@
 module O2Tutorial exposing (..)
 
 import Array exposing (..)
+import DataModel exposing (..)
 import Html exposing (..)
-import Markdown
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
+import Keyboard exposing (..)
+import Keyboard.Extra exposing (..)
+import Markdown
 import RouteHash
-import TutorialStyles.Styles exposing (..)
-import DataModel exposing (..)
 import Story exposing (..)
+import TutorialStyles.Styles exposing (..)
 
 
 render : Int -> Pane -> List (Html Msg)
@@ -112,7 +114,7 @@ main =
         { init = init
         , update = update
         , view = view
-        , subscriptions = \_ -> Sub.none
+        , subscriptions = subscriptions
         }
 
 
@@ -219,6 +221,13 @@ title model =
         [ span [ onClick (Arrows { x = -1, y = 0 }), style [ ( "margin-right", "10px" ), ( "cursor", "pointer" ) ] ] [ text (String.fromChar '◀') ]
         , text ("Section: " ++ toString model.currentStep ++ " / Step: " ++ toString model.currentBuildUp)
         , span [ onClick (Arrows { x = 1, y = 0 }), style [ ( "margin-left", "10px" ), ( "cursor", "pointer" ) ] ] [ text (String.fromChar '▶') ]
+        ]
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Sub.batch
+        [ Keyboard.Extra.arrows Arrows
         ]
 
 
