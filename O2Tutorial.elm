@@ -13,6 +13,23 @@ import Story exposing (..)
 import TutorialStyles.Styles exposing (..)
 
 
+stylesheet =
+    let
+        tag =
+            "link"
+
+        attrs =
+            [ attribute "rel" "stylesheet"
+            , attribute "property" "stylesheet"
+            , attribute "href" "https://unpkg.com/purecss@1.0.0/build/pure-min.css"
+            ]
+
+        children =
+            []
+    in
+        node tag attrs children
+
+
 render : Int -> Pane -> List (Html Msg)
 render buildup pane =
     let
@@ -84,7 +101,8 @@ applyLayout buildup layout =
 
 
 type alias Model =
-    { currentStep : Int
+    { pressedKeys : List Key
+    , currentStep : Int
     , currentBuildUp : Int
     , slides : Array Layout
     }
@@ -92,7 +110,8 @@ type alias Model =
 
 model : Model
 model =
-    { currentStep = 0
+    { pressedKeys = []
+    , currentStep = 0
     , currentBuildUp = 0
     , slides = Array.fromList story
     }
@@ -227,14 +246,15 @@ title model =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ Keyboard.Extra.arrows Arrows
+        [ Sub.map KeyMsg Keyboard.Extra.subscriptions
         ]
 
 
 view : Model -> Html Msg
 view model =
     div []
-        [ div [ class "pure-g", topBarStyle ]
+        [ stylesheet
+        , div [ class "pure-g", topBarStyle ]
             [ div [ class "pure-u-1-2" ] [ title model ]
             , div [ class "pure-u-1-2" ] [ stepper model ]
             ]
@@ -245,8 +265,20 @@ view model =
 type Msg
     = NoOp
     | MoveToPage Int Int
+    | KeyMsg Keyboard.Extra.Msg
     | Arrows { x : Int, y : Int }
-    | Enter Bool
+
+
+handleKeys : Model -> Keyboard.Extra.Msg -> Model
+handleKeys model msg =
+    let
+        pressedKeys =
+            Keyboard.Extra.update msg []
+
+        arrows =
+            Keyboard.Extra.arrows pressedKeys
+    in
+        handleArrows model arrows
 
 
 handleArrows : Model -> { x : Int, y : Int } -> Model
@@ -306,14 +338,11 @@ update action model =
         MoveToPage page buildup ->
             ( moveToPage page buildup model, Cmd.none )
 
+        KeyMsg a ->
+            ( handleKeys model a, Cmd.none )
+
         Arrows a ->
             ( handleArrows model a, Cmd.none )
-
-        Enter True ->
-            ( handleArrows model { x = 1, y = 0 }, Cmd.none )
-
-        Enter False ->
-            ( handleArrows model { x = 1, y = 0 }, Cmd.none )
 
 
 

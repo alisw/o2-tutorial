@@ -1,10 +1,10 @@
 all: dist/elm.js dist/index.html dist/sampler-sink.png dist/device.png dist/topology.png
 
+install:
+	rsync -av dist/ ${out}/
+
 dist:
 	mkdir -p dist
-
-publish:
-	rm -fr dist/.git && cd dist && git init && git remote add origin https://github.com/ktf/o2-tutorial && git add . && git commit -a -m'Published' && git push -f origin HEAD:gh-pages
 
 dist/%.png: %.png
 	cp -f $< $@
