@@ -14505,6 +14505,28 @@ var _user$project$O2Tutorial$currentBackground = function (model) {
 			});
 	}
 };
+var _user$project$O2Tutorial$stylesheet = function () {
+	var children = {ctor: '[]'};
+	var attrs = {
+		ctor: '::',
+		_0: A2(_elm_lang$html$Html_Attributes$attribute, 'rel', 'stylesheet'),
+		_1: {
+			ctor: '::',
+			_0: A2(_elm_lang$html$Html_Attributes$attribute, 'property', 'stylesheet'),
+			_1: {
+				ctor: '::',
+				_0: A2(_elm_lang$html$Html_Attributes$attribute, 'href', 'pure-min.css'),
+				_1: {
+					ctor: '::',
+					_0: A2(_elm_lang$html$Html_Attributes$attribute, 'integrity', 'sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w'),
+					_1: {ctor: '[]'}
+				}
+			}
+		}
+	};
+	var tag = 'link';
+	return A3(_elm_lang$html$Html$node, tag, attrs, children);
+}();
 var _user$project$O2Tutorial$Model = F4(
 	function (a, b, c, d) {
 		return {pressedKeys: a, currentStep: b, currentBuildUp: c, slides: d};
@@ -14611,32 +14633,21 @@ var _user$project$O2Tutorial$view = function (model) {
 		{ctor: '[]'},
 		{
 			ctor: '::',
-			_0: A2(
-				_elm_lang$html$Html$div,
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html_Attributes$class('pure-g'),
-					_1: {
+			_0: _user$project$O2Tutorial$stylesheet,
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{
 						ctor: '::',
-						_0: _user$project$TutorialStyles_Styles$topBarStyle,
-						_1: {ctor: '[]'}
-					}
-				},
-				{
-					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$div,
-						{
+						_0: _elm_lang$html$Html_Attributes$class('pure-g'),
+						_1: {
 							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$class('pure-u-1-2'),
+							_0: _user$project$TutorialStyles_Styles$topBarStyle,
 							_1: {ctor: '[]'}
-						},
-						{
-							ctor: '::',
-							_0: _user$project$O2Tutorial$title(model),
-							_1: {ctor: '[]'}
-						}),
-					_1: {
+						}
+					},
+					{
 						ctor: '::',
 						_0: A2(
 							_elm_lang$html$Html$div,
@@ -14647,27 +14658,42 @@ var _user$project$O2Tutorial$view = function (model) {
 							},
 							{
 								ctor: '::',
-								_0: _user$project$O2Tutorial$stepper(model),
+								_0: _user$project$O2Tutorial$title(model),
 								_1: {ctor: '[]'}
 							}),
-						_1: {ctor: '[]'}
-					}
-				}),
-			_1: {
-				ctor: '::',
-				_0: A2(
-					_elm_lang$html$Html$div,
-					{
-						ctor: '::',
-						_0: _user$project$TutorialStyles_Styles$descriptionStyle,
-						_1: {ctor: '[]'}
-					},
-					{
-						ctor: '::',
-						_0: _user$project$O2Tutorial$currentBackground(model),
-						_1: {ctor: '[]'}
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$div,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('pure-u-1-2'),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: _user$project$O2Tutorial$stepper(model),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}
 					}),
-				_1: {ctor: '[]'}
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{
+							ctor: '::',
+							_0: _user$project$TutorialStyles_Styles$descriptionStyle,
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _user$project$O2Tutorial$currentBackground(model),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				}
 			}
 		});
 };
