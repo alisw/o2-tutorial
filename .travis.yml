@@ -2,6 +2,7 @@ sudo: false
 script: |
     curl https://nixos.org/nix/install | sh
     nix-build .
+
 cache:
     directories:
       - /nix
