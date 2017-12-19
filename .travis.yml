@@ -2,6 +2,7 @@ sudo: true
 script: |
     curl https://nixos.org/nix/install | sh
     . /home/travis/.nix-profile/etc/profile.d/nix.sh
+    HOME=$PWD
     nix-build .
 
 cache:
