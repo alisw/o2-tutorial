@@ -12043,6 +12043,273 @@ var _rgrempel$elm_route_url$RouteHash$map = function (_p6) {
 	return _elm_lang$core$Maybe$map(
 		_rgrempel$elm_route_url$RouteHash$apply(_p6));
 };
+var _rgrempel$elm_route_url$RouteUrl_Builder$toChange = F2(
+	function (stuffIntoHash, _p0) {
+		var _p1 = _p0;
+		var _p4 = _p1._0;
+		var hashPrefix = stuffIntoHash ? '$' : '#';
+		var formattedHash = _elm_lang$core$Native_Utils.eq(_p4.hash, '') ? '' : A2(
+			_elm_lang$core$Basics_ops['++'],
+			hashPrefix,
+			_elm_lang$http$Http$encodeUri(_p4.hash));
+		var eachQuery = function (_p2) {
+			var _p3 = _p2;
+			return A2(
+				_elm_lang$core$Basics_ops['++'],
+				_elm_lang$http$Http$encodeUri(_p3._0),
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					'=',
+					_elm_lang$http$Http$encodeUri(_p3._1)));
+		};
+		var joinedPath = A2(
+			_elm_lang$core$String$join,
+			'/',
+			A2(_elm_lang$core$List$map, _elm_lang$http$Http$encodeUri, _p4.path));
+		var queryPrefix = stuffIntoHash ? '^' : '?';
+		var joinedQuery = _elm_lang$core$List$isEmpty(_p4.query) ? '' : A2(
+			_elm_lang$core$Basics_ops['++'],
+			queryPrefix,
+			A2(
+				_elm_lang$core$String$join,
+				'&',
+				A2(_elm_lang$core$List$map, eachQuery, _p4.query)));
+		var prefix = stuffIntoHash ? '#!/' : '/';
+		return {
+			entry: _p4.entry,
+			url: A2(
+				_elm_lang$core$Basics_ops['++'],
+				prefix,
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					joinedPath,
+					A2(_elm_lang$core$Basics_ops['++'], joinedQuery, formattedHash)))
+		};
+	});
+var _rgrempel$elm_route_url$RouteUrl_Builder$toUrlChange = _rgrempel$elm_route_url$RouteUrl_Builder$toChange(false);
+var _rgrempel$elm_route_url$RouteUrl_Builder$toHashChange = _rgrempel$elm_route_url$RouteUrl_Builder$toChange(true);
+var _rgrempel$elm_route_url$RouteUrl_Builder$hash = function (_p5) {
+	var _p6 = _p5;
+	return _p6._0.hash;
+};
+var _rgrempel$elm_route_url$RouteUrl_Builder$getQuery = F2(
+	function (key, _p7) {
+		var _p8 = _p7;
+		return A2(
+			_elm_lang$core$List$filterMap,
+			function (_p9) {
+				var _p10 = _p9;
+				return _elm_lang$core$Native_Utils.eq(_p10._0, key) ? _elm_lang$core$Maybe$Just(_p10._1) : _elm_lang$core$Maybe$Nothing;
+			},
+			_p8._0.query);
+	});
+var _rgrempel$elm_route_url$RouteUrl_Builder$query = function (_p11) {
+	var _p12 = _p11;
+	return _p12._0.query;
+};
+var _rgrempel$elm_route_url$RouteUrl_Builder$path = function (_p13) {
+	var _p14 = _p13;
+	return _p14._0.path;
+};
+var _rgrempel$elm_route_url$RouteUrl_Builder$entry = function (_p15) {
+	var _p16 = _p15;
+	return _p16._0.entry;
+};
+var _rgrempel$elm_route_url$RouteUrl_Builder$Builder = function (a) {
+	return {ctor: 'Builder', _0: a};
+};
+var _rgrempel$elm_route_url$RouteUrl_Builder$builder = _rgrempel$elm_route_url$RouteUrl_Builder$Builder(
+	{
+		entry: _rgrempel$elm_route_url$RouteUrl$NewEntry,
+		path: {ctor: '[]'},
+		query: {ctor: '[]'},
+		hash: ''
+	});
+var _rgrempel$elm_route_url$RouteUrl_Builder$newEntry = function (_p17) {
+	var _p18 = _p17;
+	return _rgrempel$elm_route_url$RouteUrl_Builder$Builder(
+		_elm_lang$core$Native_Utils.update(
+			_p18._0,
+			{entry: _rgrempel$elm_route_url$RouteUrl$NewEntry}));
+};
+var _rgrempel$elm_route_url$RouteUrl_Builder$modifyEntry = function (_p19) {
+	var _p20 = _p19;
+	return _rgrempel$elm_route_url$RouteUrl_Builder$Builder(
+		_elm_lang$core$Native_Utils.update(
+			_p20._0,
+			{entry: _rgrempel$elm_route_url$RouteUrl$ModifyEntry}));
+};
+var _rgrempel$elm_route_url$RouteUrl_Builder$modifyPath = F2(
+	function (func, _p21) {
+		var _p22 = _p21;
+		var _p23 = _p22._0;
+		return _rgrempel$elm_route_url$RouteUrl_Builder$Builder(
+			_elm_lang$core$Native_Utils.update(
+				_p23,
+				{
+					path: func(_p23.path)
+				}));
+	});
+var _rgrempel$elm_route_url$RouteUrl_Builder$prependToPath = function (_p24) {
+	return _rgrempel$elm_route_url$RouteUrl_Builder$modifyPath(
+		_elm_lang$core$List$append(_p24));
+};
+var _rgrempel$elm_route_url$RouteUrl_Builder$appendToPath = function (_p25) {
+	return _rgrempel$elm_route_url$RouteUrl_Builder$modifyPath(
+		A2(_elm_lang$core$Basics$flip, _elm_lang$core$List$append, _p25));
+};
+var _rgrempel$elm_route_url$RouteUrl_Builder$replacePath = F2(
+	function (list, _p26) {
+		var _p27 = _p26;
+		return _rgrempel$elm_route_url$RouteUrl_Builder$Builder(
+			_elm_lang$core$Native_Utils.update(
+				_p27._0,
+				{path: list}));
+	});
+var _rgrempel$elm_route_url$RouteUrl_Builder$modifyQuery = F2(
+	function (func, _p28) {
+		var _p29 = _p28;
+		var _p30 = _p29._0;
+		return _rgrempel$elm_route_url$RouteUrl_Builder$Builder(
+			_elm_lang$core$Native_Utils.update(
+				_p30,
+				{
+					query: func(_p30.query)
+				}));
+	});
+var _rgrempel$elm_route_url$RouteUrl_Builder$insertQuery = F2(
+	function (newKey, newValue) {
+		return _rgrempel$elm_route_url$RouteUrl_Builder$modifyQuery(
+			function (query) {
+				return function (_p31) {
+					var _p32 = _p31;
+					var _p33 = _p32._0;
+					return _p32._1 ? _elm_lang$core$List$reverse(_p33) : _elm_lang$core$List$reverse(
+						{
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: newKey, _1: newValue},
+							_1: _p33
+						});
+				}(
+					A3(
+						_elm_lang$core$List$foldl,
+						F2(
+							function (_p35, _p34) {
+								var _p36 = _p35;
+								var _p40 = _p36._0;
+								var _p37 = _p34;
+								var _p39 = _p37._1;
+								var _p38 = _p37._0;
+								return _elm_lang$core$Native_Utils.eq(newKey, _p40) ? (_p39 ? {ctor: '_Tuple2', _0: _p38, _1: _p39} : {
+									ctor: '_Tuple2',
+									_0: {
+										ctor: '::',
+										_0: {ctor: '_Tuple2', _0: newKey, _1: newValue},
+										_1: _p38
+									},
+									_1: true
+								}) : {
+									ctor: '_Tuple2',
+									_0: {
+										ctor: '::',
+										_0: {ctor: '_Tuple2', _0: _p40, _1: _p36._1},
+										_1: _p38
+									},
+									_1: _p39
+								};
+							}),
+						{
+							ctor: '_Tuple2',
+							_0: {ctor: '[]'},
+							_1: false
+						},
+						query));
+			});
+	});
+var _rgrempel$elm_route_url$RouteUrl_Builder$addQuery = F2(
+	function (key, value) {
+		return _rgrempel$elm_route_url$RouteUrl_Builder$modifyQuery(
+			function (query) {
+				return _elm_lang$core$List$reverse(
+					{
+						ctor: '::',
+						_0: {ctor: '_Tuple2', _0: key, _1: value},
+						_1: _elm_lang$core$List$reverse(query)
+					});
+			});
+	});
+var _rgrempel$elm_route_url$RouteUrl_Builder$removeQuery = function (key) {
+	return _rgrempel$elm_route_url$RouteUrl_Builder$modifyQuery(
+		_elm_lang$core$List$filter(
+			function (_p41) {
+				var _p42 = _p41;
+				return !_elm_lang$core$Native_Utils.eq(_p42._0, key);
+			}));
+};
+var _rgrempel$elm_route_url$RouteUrl_Builder$replaceQuery = F2(
+	function (query, _p43) {
+		var _p44 = _p43;
+		return _rgrempel$elm_route_url$RouteUrl_Builder$Builder(
+			_elm_lang$core$Native_Utils.update(
+				_p44._0,
+				{query: query}));
+	});
+var _rgrempel$elm_route_url$RouteUrl_Builder$modifyHash = F2(
+	function (func, _p45) {
+		var _p46 = _p45;
+		var _p47 = _p46._0;
+		return _rgrempel$elm_route_url$RouteUrl_Builder$Builder(
+			_elm_lang$core$Native_Utils.update(
+				_p47,
+				{
+					hash: func(_p47.hash)
+				}));
+	});
+var _rgrempel$elm_route_url$RouteUrl_Builder$replaceHash = F2(
+	function (hash, _p48) {
+		var _p49 = _p48;
+		return _rgrempel$elm_route_url$RouteUrl_Builder$Builder(
+			_elm_lang$core$Native_Utils.update(
+				_p49._0,
+				{hash: hash}));
+	});
+var _rgrempel$elm_route_url$RouteUrl_Builder$fromUrl = function (url) {
+	var erl = _sporto$erl$Erl$parse(url);
+	return _rgrempel$elm_route_url$RouteUrl_Builder$Builder(
+		{
+			entry: _rgrempel$elm_route_url$RouteUrl$NewEntry,
+			path: erl.path,
+			query: erl.query,
+			hash: A2(
+				_elm_lang$core$Maybe$withDefault,
+				'',
+				_elm_lang$http$Http$decodeUri(erl.hash))
+		});
+};
+var _rgrempel$elm_route_url$RouteUrl_Builder$fromHash = function (url) {
+	var unwrapped = _sporto$erl$Erl$parse(
+		A4(
+			_elm_lang$core$Regex$replace,
+			_elm_lang$core$Regex$AtMost(1),
+			_elm_lang$core$Regex$regex('\\^'),
+			_elm_lang$core$Basics$always('?'),
+			A4(
+				_elm_lang$core$Regex$replace,
+				_elm_lang$core$Regex$AtMost(1),
+				_elm_lang$core$Regex$regex('$'),
+				_elm_lang$core$Basics$always('#'),
+				A4(
+					_elm_lang$core$Regex$replace,
+					_elm_lang$core$Regex$AtMost(1),
+					_elm_lang$core$Regex$regex('^!'),
+					_elm_lang$core$Basics$always(''),
+					function (_) {
+						return _.hash;
+					}(
+						_sporto$erl$Erl$parse(url))))));
+	return _rgrempel$elm_route_url$RouteUrl_Builder$Builder(
+		{entry: _rgrempel$elm_route_url$RouteUrl$NewEntry, path: unwrapped.path, query: unwrapped.query, hash: unwrapped.hash});
+};
 var _user$project$DataModel$maxPaneBuildUp = function (pane) {
 	var _p0 = pane;
 	switch (_p0.ctor) {
@@ -12073,11 +12340,6 @@ var _user$project$DataModel$maxBuildUp = function (layout) {
 		return 1;
 	}
 };
-var _user$project$DataModel$maxSlideBuildUp = F2(
-	function (i, slides) {
-		return _user$project$DataModel$maxBuildUp(
-			A2(_elm_lang$core$Array$get, i, slides)) - 1;
-	});
 var _user$project$DataModel$foldBuildup = F2(
 	function (next, acc) {
 		var _p3 = next;
@@ -12103,6 +12365,15 @@ var _user$project$DataModel$foldBuildup = F2(
 					{
 						ctor: '::',
 						_0: _p3._0,
+						_1: {ctor: '[]'}
+					});
+			case 'AppendP':
+				return A2(
+					_elm_lang$core$Basics_ops['++'],
+					acc,
+					{
+						ctor: '::',
+						_0: A2(_elm_lang$core$Basics_ops['++'], '\n\n', _p3._0),
 						_1: {ctor: '[]'}
 					});
 			case 'ReplaceLast':
@@ -12146,6 +12417,10 @@ var _user$project$DataModel$evaluateBuildUp = F2(
 var _user$project$DataModel$Background = function (a) {
 	return {template: a};
 };
+var _user$project$DataModel$Story = F2(
+	function (a, b) {
+		return {title: a, layouts: b};
+	});
 var _user$project$DataModel$HeaderPane = function (a) {
 	return {ctor: 'HeaderPane', _0: a};
 };
@@ -12171,6 +12446,9 @@ var _user$project$DataModel$ReplaceLastN = F2(
 var _user$project$DataModel$ReplaceLast = function (a) {
 	return {ctor: 'ReplaceLast', _0: a};
 };
+var _user$project$DataModel$AppendP = function (a) {
+	return {ctor: 'AppendP', _0: a};
+};
 var _user$project$DataModel$Append = function (a) {
 	return {ctor: 'Append', _0: a};
 };
@@ -12180,68 +12458,49 @@ var _user$project$DataModel$Replace = function (a) {
 var _user$project$DataModel$Single = function (a) {
 	return {ctor: 'Single', _0: a};
 };
+var _user$project$DataModel$simpleBuildUp = function (l) {
+	var _p4 = l;
+	if (_p4.ctor === '[]') {
+		return {ctor: '[]'};
+	} else {
+		if (_p4._1.ctor === '[]') {
+			return {
+				ctor: '::',
+				_0: _user$project$DataModel$Single(_p4._0),
+				_1: {ctor: '[]'}
+			};
+		} else {
+			return A2(
+				_elm_lang$core$Basics_ops['++'],
+				{
+					ctor: '::',
+					_0: _user$project$DataModel$Single(_p4._0),
+					_1: {ctor: '[]'}
+				},
+				A2(_elm_lang$core$List$map, _user$project$DataModel$Append, _p4._1));
+		}
+	}
+};
 var _user$project$DataModel$Reuse = {ctor: 'Reuse'};
 var _user$project$Story$story = {
-	ctor: '::',
-	_0: _user$project$DataModel$SinglePaneStep(
-		{
-			header: _user$project$DataModel$HeaderPane(
-				{
-					content: {
-						ctor: '::',
-						_0: _user$project$DataModel$Single('\n## Welcome to the ALICE O2 Primer tutorial.\nUse arrow keys to navigate.\n'),
-						_1: {
-							ctor: '::',
-							_0: _user$project$DataModel$Replace('\n## Welcome to the ALICE O2 Primer tutorial.\n\nThe purpose of this tutorial is to guide you step by step through the set up of\nyour O2 working environment, the creation of your own FairRoot devices and\ntheir deployment using DDS.\n\n**Now lets get started!**\n'),
-							_1: {
-								ctor: '::',
-								_0: _user$project$DataModel$Append('\nFirst of all this tutorial assumes you are in `~/alice` and that\'s\nwhat we will use as a workarea. Notice that we set the `WORKAREA`\nenvironment variable to it.\n'),
-								_1: {ctor: '[]'}
-							}
-						}
-					}
-				}),
-			pane: _user$project$DataModel$ShellPane(
-				{
-					content: {
-						ctor: '::',
-						_0: _user$project$DataModel$Single('\n$\n'),
-						_1: {
-							ctor: '::',
-							_0: _user$project$DataModel$Reuse,
-							_1: {
-								ctor: '::',
-								_0: _user$project$DataModel$Replace('\n$ mkdir -p ~/alice\n\n$ cd ~/alice\n\n$ pwd\n/Users/me/alice\n\n$ export WORKAREA=$PWD\n'),
-								_1: {ctor: '[]'}
-							}
-						}
-					}
-				})
-		}),
-	_1: {
+	title: 'ALICE O2 Primer',
+	layouts: {
 		ctor: '::',
 		_0: _user$project$DataModel$SinglePaneStep(
 			{
+				title: 'Welcome',
 				header: _user$project$DataModel$HeaderPane(
 					{
 						content: {
 							ctor: '::',
-							_0: _user$project$DataModel$Single('\n## Setting up your environment\n\nThe first thing to do is make sure you have O2 and all\nthe required software installed. To do so you can use\n[aliBuild](http://alisw.github.io/alibuild/) a simple script which will\nbuild everything and provide you with an easy to setup work environment.\n\n'),
+							_0: _user$project$DataModel$Single('\nUse arrow keys to navigate.\n\n'),
 							_1: {
 								ctor: '::',
-								_0: _user$project$DataModel$Append('alibuild is hosted on Github and you can easily get it using `git clone`.'),
+								_0: _user$project$DataModel$Replace('\nThe purpose of this tutorial is to guide you step by step through the set up of\nyour O2 working environment, the creation of your own FairRoot devices and\ntheir deployment using DDS.\n\n**Now lets get started!**\n'),
 								_1: {
 									ctor: '::',
-									_0: _user$project$DataModel$Append('\n  Once you have downloaded alibuild itself, you need to download the\nrecipes which describe your software distribution, these are maintained in a separate project\ncalled `alidist`.\n'),
-									_1: {
-										ctor: '::',
-										_0: _user$project$DataModel$Append('Since in this particular case we want to also develop\ninside O2, we checkout its sources making sure they are at the same\nlevel as `alidist`. Notice how we pick up the `dev` branch for\ndevelopment.\n'),
-										_1: {
-											ctor: '::',
-											_0: _user$project$DataModel$Replace('\n## Building the software\n\nYou can build the software by issuing the `aliBuild build` command.\n`aliBuild` will try its best to reuse what you have on your system and\n(eventually) download prebuild software instead of recompiling. You can find in depth documentation for alibuild at\n<https://alisw.github.io/alibuild>.\n'),
-											_1: {ctor: '[]'}
-										}
-									}
+									_0: _user$project$DataModel$Append('\nFirst of all this tutorial assumes you are in `~/alice` and that\'s\nwhat we will use as a workarea. Notice that we set the `WORKAREA`\nenvironment variable to it.\n'),
+									_1: {ctor: '[]'}
 								}
 							}
 						}
@@ -12253,15 +12512,11 @@ var _user$project$Story$story = {
 							_0: _user$project$DataModel$Single('\n$\n'),
 							_1: {
 								ctor: '::',
-								_0: _user$project$DataModel$Single('\n$ pip install --upgrade aliBuild\n'),
+								_0: _user$project$DataModel$Reuse,
 								_1: {
 									ctor: '::',
-									_0: _user$project$DataModel$Append('\n$ aliBuild init O2@dev\n'),
-									_1: {
-										ctor: '::',
-										_0: _user$project$DataModel$Append('\n$ aliBuild build O2\n'),
-										_1: {ctor: '[]'}
-									}
+									_0: _user$project$DataModel$Replace('\n$ mkdir -p ~/alice\n\n$ cd ~/alice\n\n$ pwd\n/Users/me/alice\n\n$ export WORKAREA=$PWD\n'),
+									_1: {ctor: '[]'}
 								}
 							}
 						}
@@ -12271,20 +12526,21 @@ var _user$project$Story$story = {
 			ctor: '::',
 			_0: _user$project$DataModel$SinglePaneStep(
 				{
+					title: 'Building the software',
 					header: _user$project$DataModel$HeaderPane(
 						{
 							content: {
 								ctor: '::',
-								_0: _user$project$DataModel$Single('\n## Directory structure\n\nAfter a few minutes of building, aliBuild should finish successfully\nand you should be left with an \"sw\" folder where the O2 software is\ninstalled.'),
+								_0: _user$project$DataModel$Single('\nThe first thing to do is make sure you have O2 and all\nthe required software installed. To do so you can use\n[aliBuild](http://alisw.github.io/alibuild/) a simple script which will\nbuild everything and provide you with an easy to setup work environment.\n\n'),
 								_1: {
 									ctor: '::',
-									_0: _user$project$DataModel$Append('Alibuild builds each package in a separate hierarcy\n`sw/<architecture>/<package>/<version>` where:\n- `<architecture>` is the architecture of your platform (e.g.\n`osx_x86-64`, `slc7_x86-64` or `ubuntu1510_x86-64`).'),
+									_0: _user$project$DataModel$Append('\naliBuild is hosted on [Github](https://github.com/alibuild) and you can easily get it using `pip`.'),
 									_1: {
 										ctor: '::',
-										_0: _user$project$DataModel$Append('\n- `<package>` is the name of the package.'),
+										_0: _user$project$DataModel$AppendP('\nOnce you have downloaded alibuild itself, you need to download O2 and the recipes to build\nthe required externals. This can be done via `aliBuild init`. In this particular case we pick\nup the `dev` branch for it.\n'),
 										_1: {
 											ctor: '::',
-											_0: _user$project$DataModel$Append('\n- `<version>` is the version of the package.\n'),
+											_0: _user$project$DataModel$Replace('\nYou can build the software by issuing the `aliBuild build` command.  `aliBuild`\nwill try its best to reuse what you have on your system and (eventually)\ndownload prebuild software instead of recompiling. You can find in depth\ndocumentation for alibuild at <https://alisw.github.io/alibuild>.\n'),
 											_1: {ctor: '[]'}
 										}
 									}
@@ -12295,16 +12551,16 @@ var _user$project$Story$story = {
 						{
 							content: {
 								ctor: '::',
-								_0: _user$project$DataModel$Single('\n$ ls sw\nBUILD       INSTALLROOT MIRROR      SOURCES\nSPECS       TARS        osx_x86-64\n'),
+								_0: _user$project$DataModel$Single('\n$\n'),
 								_1: {
 									ctor: '::',
-									_0: _user$project$DataModel$Append('\n$ ls sw/osx_x86-64\nAliEn-CAs             GEANT3                MonALISA-gSOAP-client cgal                  nanomsg\nAliEn-Runtime         GEANT4                O2                    defaults-release      protobuf\nAliPhysics            GEANT4_VMC            ROOT                  fastjet               pythia\nAliRoot               GMP                   UUID                  gSOAP                 pythia6\nApMon-CPP             GSL                   XRootD                generators            simulation\nDDS                   HepMC                 ZeroMQ                glog                  sodium\nFairRoot              MPFR                  boost                 lhapdf                xalienfs\n'),
+									_0: _user$project$DataModel$Single('\n$ pip install --upgrade aliBuild\n'),
 									_1: {
 										ctor: '::',
-										_0: _user$project$DataModel$ReplaceLast('\n$ ls sw/osx_x86-64\n...                   AliPhysics            AliRoot               O2 ...\n\n$ ls sw/osx_x86-64/O2\nlatest   master-1 master-2\n'),
+										_0: _user$project$DataModel$Append('\n$ aliBuild init O2@dev\n'),
 										_1: {
 											ctor: '::',
-											_0: _user$project$DataModel$Append('\n$ ls sw/osx_x86-64/O2/latest\nbin            etc            include        lib            relocate-me.sh share\n'),
+											_0: _user$project$DataModel$Append('\n$ aliBuild build O2\n'),
 											_1: {ctor: '[]'}
 										}
 									}
@@ -12316,20 +12572,21 @@ var _user$project$Story$story = {
 				ctor: '::',
 				_0: _user$project$DataModel$SinglePaneStep(
 					{
+						title: 'Project structure',
 						header: _user$project$DataModel$HeaderPane(
 							{
 								content: {
 									ctor: '::',
-									_0: _user$project$DataModel$Single('\n## Setting up the environment\n\nOnce we have our O2 software built, we need to set up the environment in order to run O2 executables.\n'),
+									_0: _user$project$DataModel$Single('\nAfter a few minutes of building, aliBuild should finish successfully\nand you should be left with an `sw` folder where the O2 software is\ninstalled.'),
 									_1: {
 										ctor: '::',
-										_0: _user$project$DataModel$Append('\nFor each of the packages it builds, alibuild creates a modulefile which can be\nloaded via `alienv`, just like you are used to on lxplus or on the Grid. You\ncan use `alienv q` to list the available packages.\n'),
+										_0: _user$project$DataModel$AppendP('aliBuild builds each package in a separate hierarcy\n`sw/<architecture>/<package>/<version>` where:\n- `<architecture>` is the architecture of your platform (e.g.\n`osx_x86-64`, `slc7_x86-64` or `ubuntu1710_x86-64`).'),
 										_1: {
 											ctor: '::',
-											_0: _user$project$DataModel$Append(' You can use `alienv load` to load the environment for a given\npackage and all its dependencies.\n'),
+											_0: _user$project$DataModel$Append('\n- `<package>` is the name of the package.'),
 											_1: {
 												ctor: '::',
-												_0: _user$project$DataModel$Append('\nYou can verify you have the correct environment by looking for some of the pre-built O2 utilities.\n'),
+												_0: _user$project$DataModel$Append('\n- `<version>` is the version of the package.\n'),
 												_1: {ctor: '[]'}
 											}
 										}
@@ -12340,16 +12597,16 @@ var _user$project$Story$story = {
 							{
 								content: {
 									ctor: '::',
-									_0: _user$project$DataModel$Single('\n$ ls sw/osx_x86-64/O2/latest\nbin            etc            include        lib            relocate-me.sh share\n'),
+									_0: _user$project$DataModel$Single('\n$ ls sw\nBUILD       INSTALLROOT MIRROR      SOURCES\nSPECS       TARS        osx_x86-64\n'),
 									_1: {
 										ctor: '::',
-										_0: _user$project$DataModel$Append('\n$ alienv q\n'),
+										_0: _user$project$DataModel$Append('\n$ ls sw/osx_x86-64\nAliEn-CAs             GEANT3                MonALISA-gSOAP-client cgal                  nanomsg\nAliEn-Runtime         GEANT4                O2                    defaults-release      protobuf\nAliPhysics            GEANT4_VMC            ROOT                  fastjet               pythia\nAliRoot               GMP                   UUID                  gSOAP                 pythia6\nApMon-CPP             GSL                   XRootD                generators            simulation\nDDS                   HepMC                 ZeroMQ                glog                  sodium\nFairRoot              MPFR                  boost                 lhapdf                xalienfs\n'),
 										_1: {
 											ctor: '::',
-											_0: _user$project$DataModel$Append('\n$ alienv load O2/latest\n'),
+											_0: _user$project$DataModel$ReplaceLast('\n$ ls sw/osx_x86-64\n...                   AliPhysics            AliRoot               O2 ...\n\n$ ls sw/osx_x86-64/O2\nlatest   master-1 master-2\n'),
 											_1: {
 												ctor: '::',
-												_0: _user$project$DataModel$Append('\n$ which testFlp\n/Users/me/alice/sw/osx_x86-64/O2/master-1/bin/testFlp\n\n$ which dds-server\n/Users/me/alice/sw/osx_x86-64/DDS/master-1/bin/dds-server\n'),
+												_0: _user$project$DataModel$Append('\n$ ls sw/osx_x86-64/O2/latest\nbin            etc            include        lib            relocate-me.sh share\n'),
 												_1: {ctor: '[]'}
 											}
 										}
@@ -12359,284 +12616,307 @@ var _user$project$Story$story = {
 					}),
 				_1: {
 					ctor: '::',
-					_0: _user$project$DataModel$ImageStep(
+					_0: _user$project$DataModel$SinglePaneStep(
 						{
+							title: 'Setting up the environment',
 							header: _user$project$DataModel$HeaderPane(
 								{
 									content: {
 										ctor: '::',
-										_0: _user$project$DataModel$Single('\n## O2 / FairRoot architecture : Devices\n\nLet\'s now try to create a new O2 process which does some sort of\ndata-processing. O2 describes processing workflows in terms of so called\ndevices. Devices are instances of the `FairMQDevice` class and they\nprovide implement computation and communication with other devices.\n'),
-										_1: {ctor: '[]'}
+										_0: _user$project$DataModel$Single('\nOnce we have our O2 software built, we need to set up the environment in order to run O2 executables.\n'),
+										_1: {
+											ctor: '::',
+											_0: _user$project$DataModel$Append('\nFor each of the packages it builds, alibuild creates a modulefile which can be\nloaded via `alienv`, just like you are used to on lxplus or on the Grid. You\ncan use `alienv q` to list the available packages.\n'),
+											_1: {
+												ctor: '::',
+												_0: _user$project$DataModel$Append('\nYou can use `alienv load` to load the environment for a given\npackage and all its dependencies.\n'),
+												_1: {
+													ctor: '::',
+													_0: _user$project$DataModel$Append('\nYou can verify you have the correct environment by looking for some of the pre-built O2 utilities.\n'),
+													_1: {ctor: '[]'}
+												}
+											}
+										}
 									}
 								}),
-							image: 'device.png'
+							pane: _user$project$DataModel$ShellPane(
+								{
+									content: {
+										ctor: '::',
+										_0: _user$project$DataModel$Single('\n$ ls sw/osx_x86-64/O2/latest\nbin            etc            include        lib            relocate-me.sh share\n'),
+										_1: {
+											ctor: '::',
+											_0: _user$project$DataModel$Append('\n$ alienv q\n'),
+											_1: {
+												ctor: '::',
+												_0: _user$project$DataModel$Append('\n$ alienv load O2/latest\n'),
+												_1: {
+													ctor: '::',
+													_0: _user$project$DataModel$Append('\n$ which testFlp\n/Users/me/alice/sw/osx_x86-64/O2/master-1/bin/testFlp\n\n$ which dds-server\n/Users/me/alice/sw/osx_x86-64/DDS/master-1/bin/dds-server\n'),
+													_1: {ctor: '[]'}
+												}
+											}
+										}
+									}
+								})
 						}),
 					_1: {
 						ctor: '::',
 						_0: _user$project$DataModel$ImageStep(
 							{
+								title: 'ALFA architecture : Devices',
 								header: _user$project$DataModel$HeaderPane(
 									{
 										content: {
 											ctor: '::',
-											_0: _user$project$DataModel$Single('\n\n## O2 / FairRoot architecture : Topologies\n\nA group of devices can be linked together in what is called a ``topology\'\'.\n'),
+											_0: _user$project$DataModel$Single('\nLet\'s now try to create a new O2 process which does some sort of\ndata-processing. O2 describes processing workflows in terms of so called\ndevices. Devices are instances of the `FairMQDevice` class and they\nprovide implement computation and communication with other devices.\n'),
 											_1: {ctor: '[]'}
 										}
 									}),
-								image: 'topology.png'
+								image: 'device.png'
 							}),
 						_1: {
 							ctor: '::',
 							_0: _user$project$DataModel$ImageStep(
 								{
+									title: 'ALFA architecture : Topologies',
 									header: _user$project$DataModel$HeaderPane(
 										{
 											content: {
 												ctor: '::',
-												_0: _user$project$DataModel$Single('\n\n## Your first topology\n\nTo start with, we will construct a simple topology comprising of two devices:\n- a \"Sampler\" which produces \"hello world\" objects\n- a \"Sink\" which consumes them\n\nThe source code for this example is at <https://github.com/FairRootGroup/FairRoot/tree/master/examples/MQ/1-sampler-sink>.\n\n'),
+												_0: _user$project$DataModel$Single('\nA group of devices can be linked together in what is called a ``topology\'\'.\n'),
 												_1: {ctor: '[]'}
 											}
 										}),
-									image: 'sampler-sink.png'
+									image: 'topology.png'
 								}),
 							_1: {
 								ctor: '::',
-								_0: _user$project$DataModel$SinglePaneStep(
+								_0: _user$project$DataModel$ImageStep(
 									{
+										title: 'Your first topology',
 										header: _user$project$DataModel$HeaderPane(
 											{
 												content: {
 													ctor: '::',
-													_0: _user$project$DataModel$Single('\n\n## Creating the package\n\nIn order to create our devices, lets first create a package where we put\nall the required sources.\n\n'),
+													_0: _user$project$DataModel$Single('\nTo start with, we will construct a simple topology comprising of two devices:\n- a \"Sampler\" which produces \"hello world\" objects\n- a \"Sink\" which consumes them\n\nThe source code for this example is at <https://github.com/FairRootGroup/FairRoot/tree/master/examples/MQ/1-sampler-sink>.\n'),
 													_1: {ctor: '[]'}
 												}
 											}),
-										pane: _user$project$DataModel$ShellPane(
-											{
-												content: {
-													ctor: '::',
-													_0: _user$project$DataModel$Single('\n$ cd $WORKAREA/O2\n$ mkdir -p examples/tutorial-1\n'),
-													_1: {ctor: '[]'}
-												}
-											})
+										image: 'sampler-sink.png'
 									}),
 								_1: {
 									ctor: '::',
-									_0: _user$project$DataModel$TwoPanesStep(
+									_0: _user$project$DataModel$SinglePaneStep(
 										{
+											title: 'Creating the package',
 											header: _user$project$DataModel$HeaderPane(
 												{
 													content: {
 														ctor: '::',
-														_0: _user$project$DataModel$Single('\n\n## The Sampler\n\nWe then create the Sampler. At minimum you will need to implement the\n`Run()` method, which is used to implement the message handling loop of\nthe device.\n\n'),
+														_0: _user$project$DataModel$Single('\nIn order to create our devices, lets first create a package where we put\nall the required sources.\n'),
 														_1: {ctor: '[]'}
 													}
 												}),
-											leftPane: _user$project$DataModel$ShellPane(
+											pane: _user$project$DataModel$ShellPane(
 												{
 													content: {
 														ctor: '::',
-														_0: _user$project$DataModel$Single('\n$ cd $WORKAREA/O2\n$ mkdir -p examples/tutorial-1\n$ vim examples/tutorial-1/AliceO2TutorialSampler.h\n'),
+														_0: _user$project$DataModel$Single('\n$ cd $WORKAREA/O2\n$ mkdir -p examples/tutorial-1\n'),
 														_1: {ctor: '[]'}
 													}
-												}),
-											rightPane: _user$project$DataModel$EditorPane(
-												{
-													content: {
-														ctor: '::',
-														_0: _user$project$DataModel$Single('\n#ifndef ALICEO2TUTORIALSAMPLER_H_\n#define ALICEO2TUTORIALSAMPLER_H_\n\n#include \"FairMQDevice.h\"\n\nclass AliceO2TutorialSampler : public FairMQDevice\n{\n  protected:\n    virtual void Run();\n};\n\n#endif /* ALICEO2TUTORIALSAMPLER_H_ */\n'),
-														_1: {ctor: '[]'}
-													},
-													filename: 'examples/tutorial-1/AliceO2TutorialSampler.h'
 												})
 										}),
 									_1: {
 										ctor: '::',
 										_0: _user$project$DataModel$TwoPanesStep(
 											{
+												title: 'The Sampler',
 												header: _user$project$DataModel$HeaderPane(
 													{
 														content: {
 															ctor: '::',
-															_0: _user$project$DataModel$Single('\n\n## The Sampler\n\nWe now pass to the implementation of the `Run()` method.\n'),
-															_1: {
-																ctor: '::',
-																_0: _user$project$DataModel$Append('\nFirst the `Run()` method we will actually make sure you will keep iterating\nuntil the state machine does not exit from the `RUNNING` state.\n'),
-																_1: {
-																	ctor: '::',
-																	_0: _user$project$DataModel$ReplaceLast('\nInside this loop we construct a simple \"Hello world\" message which will\nthen published for subscribers to receive. Notice that by default the message will\nbe deallocated with `free()`. If you need to provide an customized destructor, you will need\nto specify it as an argument of `CreateMessage()`.\n'),
-																	_1: {
-																		ctor: '::',
-																		_0: A2(_user$project$DataModel$ReplaceLastN, 3, '\n\n## The Sampler\n\nThe full code for our Sampler device is the following. Copy and paste\nit in the correct place. Notice the use of the `LOG(INFO)` facility to\nhandle debug / informative messages and the fact that we artificially\nlimit the rate to one per second.\n'),
-																		_1: {
-																			ctor: '::',
-																			_0: _user$project$DataModel$Append('\nOnce we have implemented the sampler class we need to actually create an\nexecutable which instanciates our device.\n'),
-																			_1: {ctor: '[]'}
-																		}
-																	}
-																}
-															}
+															_0: _user$project$DataModel$Single('\nWe then create the Sampler. At minimum you will need to implement the\n`Run()` method, which is used to implement the message handling loop of\nthe device.\n'),
+															_1: {ctor: '[]'}
 														}
 													}),
 												leftPane: _user$project$DataModel$ShellPane(
 													{
 														content: {
 															ctor: '::',
-															_0: _user$project$DataModel$Single('\n$ vim examples/tutorial-1/AliceO2TutorialSampler.cxx\n'),
+															_0: _user$project$DataModel$Single('\n$ cd $WORKAREA/O2\n$ mkdir -p examples/tutorial-1\n$ vim examples/tutorial-1/AliceO2TutorialSampler.h\n'),
 															_1: {ctor: '[]'}
 														}
 													}),
 												rightPane: _user$project$DataModel$EditorPane(
 													{
-														filename: 'examples/tutorial-1/AliceO2TutorialSampler.cxx',
 														content: {
 															ctor: '::',
-															_0: _user$project$DataModel$Single(''),
-															_1: {
-																ctor: '::',
-																_0: _user$project$DataModel$Single('\n...\n\nvoid AliceO2TutorialSampler::Run()\n{\n  while (CheckCurrentState(RUNNING))\n  {\n    ...\n  }\n}\n\n...\n'),
-																_1: {
-																	ctor: '::',
-																	_0: _user$project$DataModel$Single('\n...\n\nchar *text = strdup(\"Hello world\");\n\nstd::unique_ptr<FairMQMessage> msg(NewMessage(text, strlen(text)));\n\nSend(msg, \"data\");\n\n...\n'),
-																	_1: {
-																		ctor: '::',
-																		_0: _user$project$DataModel$Single('\n#include <memory>\n\n#include <boost/thread.hpp>\n\n#include \"AliceO2TutorialSampler.h\"\n#include \"FairMQLogger.h\"\n\nvoid AliceO2TutorialSampler::Run()\n{\n  while (CheckCurrentState(RUNNING))\n  {\n    boost::this_thread::sleep(boost::posix_time::milliseconds(1000));\n\n    char *text = strdup(\"Hello world\");\n\n    std::unique_ptr<FairMQMessage> msg(NewMessage(text, strlen(text)));\n\n    LOG(INFO) << \"Sending \\\"\" << text << \"\\\"\";\n\n    Send(msg, \"data\");\n  }\n}\n'),
-																		_1: {ctor: '[]'}
-																	}
-																}
-															}
-														}
+															_0: _user$project$DataModel$Single('\n#ifndef ALICEO2TUTORIALSAMPLER_H_\n#define ALICEO2TUTORIALSAMPLER_H_\n\n#include \"FairMQDevice.h\"\n\nclass AliceO2TutorialSampler : public FairMQDevice\n{\n  protected:\n    virtual void Run();\n};\n\n#endif /* ALICEO2TUTORIALSAMPLER_H_ */\n'),
+															_1: {ctor: '[]'}
+														},
+														filename: 'examples/tutorial-1/AliceO2TutorialSampler.h'
 													})
 											}),
 										_1: {
 											ctor: '::',
 											_0: _user$project$DataModel$TwoPanesStep(
 												{
+													title: 'The Sampler',
 													header: _user$project$DataModel$HeaderPane(
 														{
 															content: {
 																ctor: '::',
-																_0: _user$project$DataModel$Single('\n\n## The Sink\n\nAlso for the Sink, we must derive from `FairMQDevice` and implement the\n`Run()` method.\n\nIn this case the implementation will simply receive the messages and\nprint them out. This is done by invoking the `Receive()` method of the\nchannel.\n\n'),
+																_0: _user$project$DataModel$Single('\nWe now pass to the implementation of the `Run()` method.\n'),
 																_1: {
 																	ctor: '::',
-																	_0: _user$project$DataModel$Append(' The rest of the code is similar to the Sampler one, with\nthe inner loop for the `RUNNING` state.\n\n'),
-																	_1: {ctor: '[]'}
+																	_0: _user$project$DataModel$Append('\nFirst the `Run()` method we will actually make sure you will keep iterating\nuntil the state machine does not exit from the `RUNNING` state.\n'),
+																	_1: {
+																		ctor: '::',
+																		_0: _user$project$DataModel$ReplaceLast('\nInside this loop we construct a simple \"Hello world\" message which will\nthen published for subscribers to receive. Notice that by default the message will\nbe deallocated with `free()`. If you need to provide an customized destructor, you will need\nto specify it as an argument of `CreateMessage()`.\n'),
+																		_1: {
+																			ctor: '::',
+																			_0: A2(_user$project$DataModel$ReplaceLastN, 3, '\nThe full code for our Sampler device is the following. Copy and paste\nit in the correct place. Notice the use of the `LOG(INFO)` facility to\nhandle debug / informative messages and the fact that we artificially\nlimit the rate to one per second.\n'),
+																			_1: {
+																				ctor: '::',
+																				_0: _user$project$DataModel$Append('\nOnce we have implemented the sampler class we need to actually create an\nexecutable which instanciates our device.\n'),
+																				_1: {ctor: '[]'}
+																			}
+																		}
+																	}
 																}
 															}
 														}),
-													leftPane: _user$project$DataModel$EditorPane(
+													leftPane: _user$project$DataModel$ShellPane(
 														{
-															filename: 'examples/tutorial-1/AliceO2TutorialSink.h',
 															content: {
 																ctor: '::',
-																_0: _user$project$DataModel$Single('\n#ifndef ALICEO2TUTORIALSINK_H_\n#define ALICEO2TUTORIALSINK_H_\n\n#include \"FairMQDevice.h\"\n\nclass AliceO2TutorialSink : public FairMQDevice\n{\n  protected:\n    virtual void Run();\n};\n\n#endif /* ALICEO2TUTORIALSINK_H_ */\n'),
+																_0: _user$project$DataModel$Single('\n$ vim examples/tutorial-1/AliceO2TutorialSampler.cxx\n'),
 																_1: {ctor: '[]'}
 															}
 														}),
 													rightPane: _user$project$DataModel$EditorPane(
 														{
-															filename: 'examples/tutorial-1/AliceO2TutorialSink.cxx',
+															filename: 'examples/tutorial-1/AliceO2TutorialSampler.cxx',
 															content: {
 																ctor: '::',
-																_0: _user$project$DataModel$Single('\n...\nunique_ptr<FairMQMessage> msg(NewMessage());\n\nif (Receive(msg, \"data\") >= 0)\n{\n    LOG(INFO) << \"Received message: \\\"\"\n              << string(static_cast<char*>(msg->GetData()),\n                                           msg->GetSize())\n              << \"\\\"\";\n}\n...\n'),
+																_0: _user$project$DataModel$Single(''),
 																_1: {
 																	ctor: '::',
-																	_0: _user$project$DataModel$Single('\n#include \"AliceO2TutorialSink.h\"\n#include \"FairMQLogger.h\"\n\nusing namespace std;\n\nvoid AliceO2TutorialSink::Run()\n{\n    while (CheckCurrentState(RUNNING))\n    {\n        unique_ptr<FairMQMessage> msg(NewMessage());\n\n        if (Receive(msg, \"data\") >= 0)\n        {\n            LOG(INFO) << \"Received message: \\\"\"\n                      << string(static_cast<char*>(msg->GetData()),\n                                                   msg->GetSize())\n                      << \"\\\"\";\n        }\n    }\n}\n'),
-																	_1: {ctor: '[]'}
+																	_0: _user$project$DataModel$Single('\n...\n\nvoid AliceO2TutorialSampler::Run()\n{\n  while (CheckCurrentState(RUNNING))\n  {\n    ...\n  }\n}\n\n...\n'),
+																	_1: {
+																		ctor: '::',
+																		_0: _user$project$DataModel$Single('\n...\n\nchar *text = strdup(\"Hello world\");\n\nstd::unique_ptr<FairMQMessage> msg(NewMessage(text, strlen(text)));\n\nSend(msg, \"data\");\n\n...\n'),
+																		_1: {
+																			ctor: '::',
+																			_0: _user$project$DataModel$Single('\n#include <memory>\n\n#include <boost/thread.hpp>\n\n#include \"AliceO2TutorialSampler.h\"\n#include \"FairMQLogger.h\"\n\nvoid AliceO2TutorialSampler::Run()\n{\n  while (CheckCurrentState(RUNNING))\n  {\n    boost::this_thread::sleep(boost::posix_time::milliseconds(1000));\n\n    char *text = strdup(\"Hello world\");\n\n    std::unique_ptr<FairMQMessage> msg(NewMessage(text, strlen(text)));\n\n    LOG(INFO) << \"Sending \\\"\" << text << \"\\\"\";\n\n    Send(msg, \"data\");\n  }\n}\n'),
+																			_1: {ctor: '[]'}
+																		}
+																	}
 																}
 															}
 														})
 												}),
 											_1: {
 												ctor: '::',
-												_0: _user$project$DataModel$SinglePaneStep(
+												_0: _user$project$DataModel$TwoPanesStep(
 													{
+														title: 'The sink',
 														header: _user$project$DataModel$HeaderPane(
 															{
 																content: {
 																	ctor: '::',
-																	_0: _user$project$DataModel$Single('\n\n## Creating the driver processes\n\nNow that we have two classes for our own `FairMQDevice`s, we need to\ncreate some boilerplate to be able to pass the (optional) arguments and\nlaunch start the devices. We will call these two executable `runSampler`\nand `runSink` respectively.\n\n'),
+																	_0: _user$project$DataModel$Single('\nAlso for the Sink, we must derive from `FairMQDevice` and implement the\n`Run()` method.\n\nIn this case the implementation will simply receive the messages and\nprint them out. This is done by invoking the `Receive()` method of the\nchannel.\n\n'),
 																	_1: {
 																		ctor: '::',
-																		_0: _user$project$DataModel$Replace('\n## Creating the driver processes\n\nFirst of all the driver is responsible to instanciate the devices and\nthe configuration option parser. We call the `CatchSignals()` method\nof the `FairMQDevice` class to make sure that exceptions are properly\nhandled as `std::exceptions.`\n'),
-																		_1: {
-																			ctor: '::',
-																			_0: _user$project$DataModel$ReplaceLast('\n## Creating the driver processes\n\nAs part of the initialization the driver needs to:\n- Parse the configuration.\n'),
-																			_1: {
-																				ctor: '::',
-																				_0: _user$project$DataModel$Append('- Create the map of channel from the configuration.\n'),
-																				_1: {
-																					ctor: '::',
-																					_0: _user$project$DataModel$Append('- Set the transport type and any other option found in the\nconfiguration.\n'),
-																					_1: {
-																						ctor: '::',
-																						_0: _user$project$DataModel$Append('- Initialise and transition the state machine until the\nmain loop is reached.\n'),
-																						_1: {ctor: '[]'}
-																					}
-																				}
-																			}
-																		}
+																		_0: _user$project$DataModel$Append(' The rest of the code is similar to the Sampler one, with\nthe inner loop for the `RUNNING` state.\n\n'),
+																		_1: {ctor: '[]'}
 																	}
 																}
 															}),
-														pane: _user$project$DataModel$EditorPane(
+														leftPane: _user$project$DataModel$EditorPane(
 															{
-																filename: 'examples/tutorial-1/runSampler.cxx',
+																filename: 'examples/tutorial-1/AliceO2TutorialSink.h',
 																content: {
 																	ctor: '::',
-																	_0: _user$project$DataModel$Single('\n'),
+																	_0: _user$project$DataModel$Single('\n#ifndef ALICEO2TUTORIALSINK_H_\n#define ALICEO2TUTORIALSINK_H_\n\n#include \"FairMQDevice.h\"\n\nclass AliceO2TutorialSink : public FairMQDevice\n{\n  protected:\n    virtual void Run();\n};\n\n#endif /* ALICEO2TUTORIALSINK_H_ */\n'),
+																	_1: {ctor: '[]'}
+																}
+															}),
+														rightPane: _user$project$DataModel$EditorPane(
+															{
+																filename: 'examples/tutorial-1/AliceO2TutorialSink.cxx',
+																content: {
+																	ctor: '::',
+																	_0: _user$project$DataModel$Single('\n...\nunique_ptr<FairMQMessage> msg(NewMessage());\n\nif (Receive(msg, \"data\") >= 0)\n{\n    LOG(INFO) << \"Received message: \\\"\"\n              << string(static_cast<char*>(msg->GetData()),\n                                           msg->GetSize())\n              << \"\\\"\";\n}\n...\n'),
 																	_1: {
 																		ctor: '::',
-																		_0: _user$project$DataModel$Single('\n...\nint main(int argc, char** argv)\n{\n  AliceO2TutorialSampler sampler;\n  sampler.CatchSignals();\n\n  FairMQProgOptions config;\n\n  try\n  {\n    if (config.ParseAll(argc, argv))\n      return 0;\n    ...\n  }\n  catch (std::exception& e)\n  {\n    LOG(ERROR) << e.what();\n    LOG(INFO) << \"Command line options are the following: \";\n    config.PrintHelp();\n    return 1;\n  }\n  return 0;\n}\n'),
-																		_1: {
-																			ctor: '::',
-																			_0: _user$project$DataModel$Single('\n...\n\nstd::string filename = config.GetValue<std::string>(\"config-json-file\");\nstd::string id = config.GetValue<std::string>(\"id\");\n\nconfig.UserParser<FairMQParser::JSON>(filename, id);\n'),
-																			_1: {
-																				ctor: '::',
-																				_0: _user$project$DataModel$Append('\nsampler.fChannels = config.GetFairMQMap();\n'),
-																				_1: {
-																					ctor: '::',
-																					_0: _user$project$DataModel$Append('\nsampler.SetTransport(config.GetValue<std::string>(\"transport\"));\nsampler.SetProperty(AliceO2TutorialSampler::Id, id);\n'),
-																					_1: {
-																						ctor: '::',
-																						_0: _user$project$DataModel$Append('\nsampler.ChangeState(\"INIT_DEVICE\");\nsampler.WaitForEndOfState(\"INIT_DEVICE\");\n\nsampler.ChangeState(\"INIT_TASK\");\nsampler.WaitForEndOfState(\"INIT_TASK\");\n\nsampler.ChangeState(\"RUN\");\nsampler.InteractiveStateLoop();\n'),
-																						_1: {ctor: '[]'}
-																					}
-																				}
-																			}
-																		}
+																		_0: _user$project$DataModel$Single('\n#include \"AliceO2TutorialSink.h\"\n#include \"FairMQLogger.h\"\n\nusing namespace std;\n\nvoid AliceO2TutorialSink::Run()\n{\n    while (CheckCurrentState(RUNNING))\n    {\n        unique_ptr<FairMQMessage> msg(NewMessage());\n\n        if (Receive(msg, \"data\") >= 0)\n        {\n            LOG(INFO) << \"Received message: \\\"\"\n                      << string(static_cast<char*>(msg->GetData()),\n                                                   msg->GetSize())\n                      << \"\\\"\";\n        }\n    }\n}\n'),
+																		_1: {ctor: '[]'}
 																	}
 																}
 															})
 													}),
 												_1: {
 													ctor: '::',
-													_0: _user$project$DataModel$TwoPanesStep(
+													_0: _user$project$DataModel$SinglePaneStep(
 														{
+															title: 'Creating the driver processes',
 															header: _user$project$DataModel$HeaderPane(
 																{
 																	content: {
 																		ctor: '::',
-																		_0: _user$project$DataModel$Single('\n  ## Creating the driver processes\n\n  The final sourcecode for the sampler can be found below with the similar one for the sink.\n  '),
-																		_1: {ctor: '[]'}
+																		_0: _user$project$DataModel$Single('\nNow that we have two classes for our own `FairMQDevice`s, we need to\ncreate some boilerplate to be able to pass the (optional) arguments and\nlaunch start the devices. We will call these two executable `runSampler`\nand `runSink` respectively.\n'),
+																		_1: {
+																			ctor: '::',
+																			_0: _user$project$DataModel$Replace('\nFirst of all the driver is responsible to instanciate the devices and\nthe configuration option parser. We call the `CatchSignals()` method\nof the `FairMQDevice` class to make sure that exceptions are properly\nhandled as `std::exceptions.`\n'),
+																			_1: {
+																				ctor: '::',
+																				_0: _user$project$DataModel$ReplaceLast('\nAs part of the initialization the driver needs to:\n- Parse the configuration.\n'),
+																				_1: {
+																					ctor: '::',
+																					_0: _user$project$DataModel$Append('- Create the map of channel from the configuration.\n'),
+																					_1: {
+																						ctor: '::',
+																						_0: _user$project$DataModel$Append('- Set the transport type and any other option found in the\nconfiguration.\n'),
+																						_1: {
+																							ctor: '::',
+																							_0: _user$project$DataModel$Append('- Initialise and transition the state machine until the\nmain loop is reached.\n'),
+																							_1: {ctor: '[]'}
+																						}
+																					}
+																				}
+																			}
+																		}
 																	}
 																}),
-															leftPane: _user$project$DataModel$EditorPane(
+															pane: _user$project$DataModel$EditorPane(
 																{
 																	filename: 'examples/tutorial-1/runSampler.cxx',
 																	content: {
 																		ctor: '::',
-																		_0: _user$project$DataModel$Single('\n#include <iostream>\n\n#include \"boost/program_options.hpp\"\n\n#include \"FairMQLogger.h\"\n#include \"FairMQParser.h\"\n#include \"FairMQProgOptions.h\"\n#include \"AliceO2TutorialSampler.h\"\n\nusing namespace boost::program_options;\n\nint main(int argc, char** argv)\n{\n    AliceO2TutorialSampler sampler;\n    sampler.CatchSignals();\n\n    FairMQProgOptions config;\n\n    try\n    {\n        if (config.ParseAll(argc, argv))\n        {\n            return 0;\n        }\n\n        std::string filename = config.GetValue<std::string>(\"config-json-file\");\n        std::string id = config.GetValue<std::string>(\"id\");\n\n        config.UserParser<FairMQParser::JSON>(filename, id);\n\n        sampler.fChannels = config.GetFairMQMap();\n\n        LOG(INFO) << \"PID: \" << getpid();\n\n        sampler.SetTransport(config.GetValue<std::string>(\"transport\"));\n\n        sampler.SetProperty(AliceO2TutorialSampler::Id, id);\n\n        sampler.ChangeState(\"INIT_DEVICE\");\n        sampler.WaitForEndOfState(\"INIT_DEVICE\");\n\n        sampler.ChangeState(\"INIT_TASK\");\n        sampler.WaitForEndOfState(\"INIT_TASK\");\n\n        sampler.ChangeState(\"RUN\");\n        sampler.InteractiveStateLoop();\n    }\n    catch (std::exception& e)\n    {\n        LOG(ERROR) << e.what();\n        LOG(INFO) << \"Command line options are the following: \";\n        config.PrintHelp();\n        return 1;\n    }\n\n    return 0;\n}\n'),
-																		_1: {ctor: '[]'}
-																	}
-																}),
-															rightPane: _user$project$DataModel$EditorPane(
-																{
-																	filename: 'examples/tutorial-1/runSink.cxx',
-																	content: {
-																		ctor: '::',
-																		_0: _user$project$DataModel$Single('\n#include <iostream>\n\n#include \"FairMQLogger.h\"\n#include \"FairMQParser.h\"\n#include \"FairMQProgOptions.h\"\n#include \"AliceO2TutorialSink.h\"\n\nint main(int argc, char** argv)\n{\n    AliceO2TutorialSink sink;\n    sink.CatchSignals();\n\n    FairMQProgOptions config;\n\n    try\n    {\n        if (config.ParseAll(argc, argv))\n        {\n            return 0;\n        }\n\n        std::string filename = config.GetValue<std::string>(\"config-json-file\");\n        std::string id = config.GetValue<std::string>(\"id\");\n\n        config.UserParser<FairMQParser::JSON>(filename, id);\n\n        sink.fChannels = config.GetFairMQMap();\n\n        LOG(INFO) << \"PID: \" << getpid();\n\n        sink.SetTransport(config.GetValue<std::string>(\"transport\"));\n\n        sink.SetProperty(AliceO2TutorialSink::Id, id);\n\n        sink.ChangeState(\"INIT_DEVICE\");\n        sink.WaitForEndOfState(\"INIT_DEVICE\");\n\n        sink.ChangeState(\"INIT_TASK\");\n        sink.WaitForEndOfState(\"INIT_TASK\");\n\n        sink.ChangeState(\"RUN\");\n        sink.InteractiveStateLoop();\n    }\n    catch (std::exception& e)\n    {\n        LOG(ERROR) << e.what();\n        LOG(INFO) << \"Command line options are the following: \";\n        config.PrintHelp();\n        return 1;\n    }\n\n    return 0;\n}\n'),
-																		_1: {ctor: '[]'}
+																		_0: _user$project$DataModel$Single('\n'),
+																		_1: {
+																			ctor: '::',
+																			_0: _user$project$DataModel$Single('\n...\nint main(int argc, char** argv)\n{\n  AliceO2TutorialSampler sampler;\n  sampler.CatchSignals();\n\n  FairMQProgOptions config;\n\n  try\n  {\n    if (config.ParseAll(argc, argv))\n      return 0;\n    ...\n  }\n  catch (std::exception& e)\n  {\n    LOG(ERROR) << e.what();\n    LOG(INFO) << \"Command line options are the following: \";\n    config.PrintHelp();\n    return 1;\n  }\n  return 0;\n}\n'),
+																			_1: {
+																				ctor: '::',
+																				_0: _user$project$DataModel$Single('\n...\n\nstd::string filename = config.GetValue<std::string>(\"config-json-file\");\nstd::string id = config.GetValue<std::string>(\"id\");\n\nconfig.UserParser<FairMQParser::JSON>(filename, id);\n'),
+																				_1: {
+																					ctor: '::',
+																					_0: _user$project$DataModel$Append('\nsampler.fChannels = config.GetFairMQMap();\n'),
+																					_1: {
+																						ctor: '::',
+																						_0: _user$project$DataModel$Append('\nsampler.SetTransport(config.GetValue<std::string>(\"transport\"));\nsampler.SetProperty(AliceO2TutorialSampler::Id, id);\n'),
+																						_1: {
+																							ctor: '::',
+																							_0: _user$project$DataModel$Append('\nsampler.ChangeState(\"INIT_DEVICE\");\nsampler.WaitForEndOfState(\"INIT_DEVICE\");\n\nsampler.ChangeState(\"INIT_TASK\");\nsampler.WaitForEndOfState(\"INIT_TASK\");\n\nsampler.ChangeState(\"RUN\");\nsampler.InteractiveStateLoop();\n'),
+																							_1: {ctor: '[]'}
+																						}
+																					}
+																				}
+																			}
+																		}
 																	}
 																})
 														}),
@@ -12644,40 +12924,30 @@ var _user$project$Story$story = {
 														ctor: '::',
 														_0: _user$project$DataModel$TwoPanesStep(
 															{
+																title: 'Creating the driver processes',
 																header: _user$project$DataModel$HeaderPane(
 																	{
 																		content: {
 																			ctor: '::',
-																			_0: _user$project$DataModel$Single('## Compiling\n\nIn order to compile in Alice O2 we rely on [CMake](https://cmake.org). You will need\nto add a `examples/tutorial-1/CMakeLists.txt` which specifies how to compile the to Device\ndriver processes.\n'),
-																			_1: {
-																				ctor: '::',
-																				_0: _user$project$DataModel$Append('In order to build you need to move to the\n`sw/BUILD/O2-latest/O2` directory and type make.\n'),
-																				_1: {ctor: '[]'}
-																			}
+																			_0: _user$project$DataModel$Single('\n  The final sourcecode for the sampler can be found below with the similar one for the sink.\n  '),
+																			_1: {ctor: '[]'}
 																		}
 																	}),
-																leftPane: _user$project$DataModel$ShellPane(
+																leftPane: _user$project$DataModel$EditorPane(
 																	{
+																		filename: 'examples/tutorial-1/runSampler.cxx',
 																		content: {
 																			ctor: '::',
-																			_0: _user$project$DataModel$Single('\n$ vim examples/tutorial-1/CMakeLists.txt\n'),
-																			_1: {
-																				ctor: '::',
-																				_0: _user$project$DataModel$Append('\n$ cd $WORKAREA/sw/BUILD/O2-latest/O2\n$ make -j 10 install\n...\n[ 73%] Built target aliceHLTEventSampler\n[ 74%] Built target aliceHLTWrapper\n[ 76%] Built target runComponent\n[ 88%] Built target AliceO2Cdb\n[ 90%] Built target conditions-client\n[ 91%] Built target conditions-server\n[ 91%] Built target libAliceO2Cdb.rootmap\n[ 94%] Built target runSampler\n[ 96%] Built target runSink\n[ 97%] Built target libtestits.rootmap\n[100%] Built target testits\n$\n'),
-																				_1: {
-																					ctor: '::',
-																					_0: _user$project$DataModel$Replace('\n$ which runSampler\n/Users/me/alice/sw/osx_x86-64/O2/master-1/bin/runSampler\n$ which runSink\n/Users/me/alice/sw/osx_x86-64/O2/master-1/bin/runSink\n'),
-																					_1: {ctor: '[]'}
-																				}
-																			}
+																			_0: _user$project$DataModel$Single('\n#include <iostream>\n\n#include \"boost/program_options.hpp\"\n\n#include \"FairMQLogger.h\"\n#include \"FairMQParser.h\"\n#include \"FairMQProgOptions.h\"\n#include \"AliceO2TutorialSampler.h\"\n\nusing namespace boost::program_options;\n\nint main(int argc, char** argv)\n{\n    AliceO2TutorialSampler sampler;\n    sampler.CatchSignals();\n\n    FairMQProgOptions config;\n\n    try\n    {\n        if (config.ParseAll(argc, argv))\n        {\n            return 0;\n        }\n\n        std::string filename = config.GetValue<std::string>(\"config-json-file\");\n        std::string id = config.GetValue<std::string>(\"id\");\n\n        config.UserParser<FairMQParser::JSON>(filename, id);\n\n        sampler.fChannels = config.GetFairMQMap();\n\n        LOG(INFO) << \"PID: \" << getpid();\n\n        sampler.SetTransport(config.GetValue<std::string>(\"transport\"));\n\n        sampler.SetProperty(AliceO2TutorialSampler::Id, id);\n\n        sampler.ChangeState(\"INIT_DEVICE\");\n        sampler.WaitForEndOfState(\"INIT_DEVICE\");\n\n        sampler.ChangeState(\"INIT_TASK\");\n        sampler.WaitForEndOfState(\"INIT_TASK\");\n\n        sampler.ChangeState(\"RUN\");\n        sampler.InteractiveStateLoop();\n    }\n    catch (std::exception& e)\n    {\n        LOG(ERROR) << e.what();\n        LOG(INFO) << \"Command line options are the following: \";\n        config.PrintHelp();\n        return 1;\n    }\n\n    return 0;\n}\n'),
+																			_1: {ctor: '[]'}
 																		}
 																	}),
 																rightPane: _user$project$DataModel$EditorPane(
 																	{
-																		filename: 'examples/tutorial-1/CMakeLists.txt',
+																		filename: 'examples/tutorial-1/runSink.cxx',
 																		content: {
 																			ctor: '::',
-																			_0: _user$project$DataModel$Single('\ninclude_directories(\n  ${FAIRROOT_ROOT}/include\n  ${Boost_INCLUDE_DIR}\n  ${FAIRROOT_INCLUDE_DIR}\n  ${CMAKE_SOURCE_DIR}/examples/tutorial-1\n)\n\nlink_directories(\n  ${Boost_LIBRARY_DIRS}\n  ${FAIRROOT_LIBRARY_DIR}\n)\n\nadd_executable(runSink runSink.cxx AliceO2TutorialSink.cxx)\ntarget_link_libraries(runSink FairMQ\n                              boost_log\n                              boost_thread\n                              boost_system\n                              boost_program_options\n                              fairmq_logger)\nadd_executable(runSampler runSampler.cxx AliceO2TutorialSampler.cxx)\ntarget_link_libraries(runSampler FairMQ\n                                 boost_log\n                                 boost_thread\n                                 boost_system\n                                 boost_program_options\n                                 fairmq_logger)\ninstall(TARGETS runSampler runSink\n        RUNTIME DESTINATION bin)\n'),
+																			_0: _user$project$DataModel$Single('\n#include <iostream>\n\n#include \"FairMQLogger.h\"\n#include \"FairMQParser.h\"\n#include \"FairMQProgOptions.h\"\n#include \"AliceO2TutorialSink.h\"\n\nint main(int argc, char** argv)\n{\n    AliceO2TutorialSink sink;\n    sink.CatchSignals();\n\n    FairMQProgOptions config;\n\n    try\n    {\n        if (config.ParseAll(argc, argv))\n        {\n            return 0;\n        }\n\n        std::string filename = config.GetValue<std::string>(\"config-json-file\");\n        std::string id = config.GetValue<std::string>(\"id\");\n\n        config.UserParser<FairMQParser::JSON>(filename, id);\n\n        sink.fChannels = config.GetFairMQMap();\n\n        LOG(INFO) << \"PID: \" << getpid();\n\n        sink.SetTransport(config.GetValue<std::string>(\"transport\"));\n\n        sink.SetProperty(AliceO2TutorialSink::Id, id);\n\n        sink.ChangeState(\"INIT_DEVICE\");\n        sink.WaitForEndOfState(\"INIT_DEVICE\");\n\n        sink.ChangeState(\"INIT_TASK\");\n        sink.WaitForEndOfState(\"INIT_TASK\");\n\n        sink.ChangeState(\"RUN\");\n        sink.InteractiveStateLoop();\n    }\n    catch (std::exception& e)\n    {\n        LOG(ERROR) << e.what();\n        LOG(INFO) << \"Command line options are the following: \";\n        config.PrintHelp();\n        return 1;\n    }\n\n    return 0;\n}\n'),
 																			_1: {ctor: '[]'}
 																		}
 																	})
@@ -12686,19 +12956,16 @@ var _user$project$Story$story = {
 															ctor: '::',
 															_0: _user$project$DataModel$TwoPanesStep(
 																{
+																	title: 'Compiling',
 																	header: _user$project$DataModel$HeaderPane(
 																		{
 																			content: {
 																				ctor: '::',
-																				_0: _user$project$DataModel$Single('## Configuration\n\nNow that we have two devices, we need run them and make sure they are\nconfigured correctly so that they can talk to each other. This is done via a\nJSON based configuration.\n'),
+																				_0: _user$project$DataModel$Single('\nIn order to compile in Alice O2 we rely on [CMake](https://cmake.org). You will need\nto add a `examples/tutorial-1/CMakeLists.txt` which specifies how to compile the to Device\ndriver processes.\n'),
 																				_1: {
 																					ctor: '::',
-																					_0: _user$project$DataModel$Replace('## Configuration\nAt the toplevel the configuration has the following structure,\nwhere there is one `device` stanza for each device we want to run (two\nin our case, one for the sampler and one for the sink).\n'),
-																					_1: {
-																						ctor: '::',
-																						_0: _user$project$DataModel$Replace('## Configuration\nAt minimum, each of the stanzas will have to specify a unique id for the\ndevice and the details about its channels, making sure they correspond\nto what is being specified in the C++ code.\n'),
-																						_1: {ctor: '[]'}
-																					}
+																					_0: _user$project$DataModel$Append('In order to build you need to move to the\n`sw/BUILD/O2-latest/O2` directory and type make.\n'),
+																					_1: {ctor: '[]'}
 																				}
 																			}
 																		}),
@@ -12706,29 +12973,25 @@ var _user$project$Story$story = {
 																		{
 																			content: {
 																				ctor: '::',
-																				_0: _user$project$DataModel$Single('\n$ vim examples/tutorial-1/config.json\n'),
-																				_1: {ctor: '[]'}
+																				_0: _user$project$DataModel$Single('\n$ vim examples/tutorial-1/CMakeLists.txt\n'),
+																				_1: {
+																					ctor: '::',
+																					_0: _user$project$DataModel$Append('\n$ cd $WORKAREA/sw/BUILD/O2-latest/O2\n$ make -j 10 install\n...\n[ 73%] Built target aliceHLTEventSampler\n[ 74%] Built target aliceHLTWrapper\n[ 76%] Built target runComponent\n[ 88%] Built target AliceO2Cdb\n[ 90%] Built target conditions-client\n[ 91%] Built target conditions-server\n[ 91%] Built target libAliceO2Cdb.rootmap\n[ 94%] Built target runSampler\n[ 96%] Built target runSink\n[ 97%] Built target libtestits.rootmap\n[100%] Built target testits\n$\n'),
+																					_1: {
+																						ctor: '::',
+																						_0: _user$project$DataModel$Replace('\n$ which runSampler\n/Users/me/alice/sw/osx_x86-64/O2/master-1/bin/runSampler\n$ which runSink\n/Users/me/alice/sw/osx_x86-64/O2/master-1/bin/runSink\n'),
+																						_1: {ctor: '[]'}
+																					}
+																				}
 																			}
 																		}),
 																	rightPane: _user$project$DataModel$EditorPane(
 																		{
-																			filename: 'examples/tutorial-1/config.json',
+																			filename: 'examples/tutorial-1/CMakeLists.txt',
 																			content: {
 																				ctor: '::',
-																				_0: _user$project$DataModel$Single(''),
-																				_1: {
-																					ctor: '::',
-																					_0: _user$project$DataModel$Single('\n{\n  \"fairMQOptions\":\n  {\n    \"device\":\n    {\n      ...\n    },\n    \"device\":\n    {\n      ...\n    }\n  }\n}\n'),
-																					_1: {
-																						ctor: '::',
-																						_0: _user$project$DataModel$Replace('\n\"id\": \"sampler1\",\n\"channel\":\n{\n    \"name\": \"data\",\n    \"socket\":\n    {\n        \"type\": \"push\",\n        \"method\": \"bind\",\n        \"address\": \"tcp://*:5555\",\n        \"sndBufSize\": \"1000\",\n        \"rcvBufSize\": \"1000\",\n        \"rateLogging\": \"0\"\n    }\n}\n'),
-																						_1: {
-																							ctor: '::',
-																							_0: _user$project$DataModel$Single('\n{\n    \"fairMQOptions\":\n    {\n        \"device\":\n        {\n            \"id\": \"sampler1\",\n            \"channel\":\n            {\n                \"name\": \"data\",\n                \"socket\":\n                {\n                    \"type\": \"push\",\n                    \"method\": \"bind\",\n                    \"address\": \"tcp://*:5555\",\n                    \"sndBufSize\": \"1000\",\n                    \"rcvBufSize\": \"1000\",\n                    \"rateLogging\": \"0\"\n                }\n            }\n        },\n\n        \"device\":\n        {\n            \"id\": \"sink1\",\n            \"channel\":\n            {\n                \"name\": \"data\",\n                \"socket\":\n                {\n                    \"type\": \"pull\",\n                    \"method\": \"connect\",\n                    \"address\": \"tcp://localhost:5555\",\n                    \"sndBufSize\": \"1000\",\n                    \"rcvBufSize\": \"1000\",\n                    \"rateLogging\": \"0\"\n                }\n            }\n        }\n    }\n}\n'),
-																							_1: {ctor: '[]'}
-																						}
-																					}
-																				}
+																				_0: _user$project$DataModel$Single('\ninclude_directories(\n  ${FAIRROOT_ROOT}/include\n  ${Boost_INCLUDE_DIR}\n  ${FAIRROOT_INCLUDE_DIR}\n  ${CMAKE_SOURCE_DIR}/examples/tutorial-1\n)\n\nlink_directories(\n  ${Boost_LIBRARY_DIRS}\n  ${FAIRROOT_LIBRARY_DIR}\n)\n\nadd_executable(runSink runSink.cxx AliceO2TutorialSink.cxx)\ntarget_link_libraries(runSink FairMQ\n                              boost_log\n                              boost_thread\n                              boost_system\n                              boost_program_options\n                              fairmq_logger)\nadd_executable(runSampler runSampler.cxx AliceO2TutorialSampler.cxx)\ntarget_link_libraries(runSampler FairMQ\n                                 boost_log\n                                 boost_thread\n                                 boost_system\n                                 boost_program_options\n                                 fairmq_logger)\ninstall(TARGETS runSampler runSink\n        RUNTIME DESTINATION bin)\n'),
+																				_1: {ctor: '[]'}
 																			}
 																		})
 																}),
@@ -12736,15 +12999,20 @@ var _user$project$Story$story = {
 																ctor: '::',
 																_0: _user$project$DataModel$TwoPanesStep(
 																	{
+																		title: 'Configuration',
 																		header: _user$project$DataModel$HeaderPane(
 																			{
 																				content: {
 																					ctor: '::',
-																					_0: _user$project$DataModel$Single('\n## Running\n\nWe can finally run our applications. Simply pass the configuration when\ninvoking them on the command line.\n'),
+																					_0: _user$project$DataModel$Single('\nNow that we have two devices, we need run them and make sure they are\nconfigured correctly so that they can talk to each other. This is done via a\nJSON based configuration.\n'),
 																					_1: {
 																						ctor: '::',
-																						_0: _user$project$DataModel$Append('Notice how we also need to provide the id of the device on the command\nline so that it\'s configuration can be picked up from file.'),
-																						_1: {ctor: '[]'}
+																						_0: _user$project$DataModel$Replace('\nAt the toplevel the configuration has the following structure,\nwhere there is one `device` stanza for each device we want to run (two\nin our case, one for the sampler and one for the sink).\n'),
+																						_1: {
+																							ctor: '::',
+																							_0: _user$project$DataModel$Replace('\nAt minimum, each of the stanzas will have to specify a unique id for the\ndevice and the details about its channels, making sure they correspond\nto what is being specified in the C++ code.\n'),
+																							_1: {ctor: '[]'}
+																						}
 																					}
 																				}
 																			}),
@@ -12752,36 +13020,25 @@ var _user$project$Story$story = {
 																			{
 																				content: {
 																					ctor: '::',
-																					_0: _user$project$DataModel$Single('\n$ runSampler --id sampler1 \\\n             --config-json-file examples/tutorial-1/config.json\n      '),
-																					_1: {
-																						ctor: '::',
-																						_0: _user$project$DataModel$Reuse,
-																						_1: {
-																							ctor: '::',
-																							_0: _user$project$DataModel$Append('\n[STATE] Entering FairMQ state machine\n[INFO] *************************************************************************************\n[INFO] ***************************     Program options found     ***************************\n[INFO] *************************************************************************************\n[INFO] config-json-file = examples/tutorial-1/config.json  [Type=string]  [provided value] *\n[INFO] id               = sampler1                         [Type=string]  [provided value] *\n[INFO] io-threads       = 1                                [Type=int]     [default value]  *\n[INFO] log-color        = 1                                [Type=bool]    [default value]  *\n[INFO] transport        = zeromq                           [Type=string]  [default value]  *\n[INFO] verbose          = DEBUG                            [Type=string]  [default value]  *\n[INFO] *************************************************************************************\n[DEBUG] Found device id \'sampler1\' in JSON input\n[DEBUG] Found device id \'sink1\' in JSON input\n[DEBUG] [node = device]   id = sampler1\n[DEBUG]        [node = channel]   name = data\n[DEBUG]                [node = socket]   socket index = 1\n[DEBUG]                        type        = push\n[DEBUG]                        method      = bind\n[DEBUG]                        address     = tcp://*:5555\n[DEBUG]                        sndBufSize  = 1000\n[DEBUG]                        rcvBufSize  = 1000\n[DEBUG]                        rateLogging = 0\n[DEBUG] ---- Channel-keys found are :\n[DEBUG] data\n[INFO] PID: 41567\n[DEBUG] Using ZeroMQ library, version: 4.1.3\n[STATE] Entering INITIALIZING DEVICE state\n[DEBUG] Validating channel \"data[0]\"... VALID\n[DEBUG] Initializing channel data[0] (push)\n[DEBUG] Binding channel data[0] on tcp://*:5555\n[STATE] Entering DEVICE READY state\n[STATE] Entering INITIALIZING TASK state\n[STATE] Entering READY state\n[STATE] Entering RUNNING state\n[INFO] DEVICE: Running...\n[INFO] Use keys to control the state machine:\n[INFO] [h] help, [p] pause, [r] run, [s] stop, [t] reset task, [d] reset device, [q] end, [j] init task, [i] init device\n'),
-																							_1: {
-																								ctor: '::',
-																								_0: _user$project$DataModel$ReplaceLast('\n...\n[INFO] Sending \"Hello world\"\n'),
-																								_1: {ctor: '[]'}
-																							}
-																						}
-																					}
+																					_0: _user$project$DataModel$Single('\n$ vim examples/tutorial-1/config.json\n'),
+																					_1: {ctor: '[]'}
 																				}
 																			}),
-																		rightPane: _user$project$DataModel$ShellPane(
+																		rightPane: _user$project$DataModel$EditorPane(
 																			{
+																				filename: 'examples/tutorial-1/config.json',
 																				content: {
 																					ctor: '::',
-																					_0: _user$project$DataModel$Single('\n$ runSink --id sink1 \\\n          --config-json-file examples/tutorial-1/config.json\n'),
+																					_0: _user$project$DataModel$Single(''),
 																					_1: {
 																						ctor: '::',
-																						_0: _user$project$DataModel$Reuse,
+																						_0: _user$project$DataModel$Single('\n{\n  \"fairMQOptions\":\n  {\n    \"device\":\n    {\n      ...\n    },\n    \"device\":\n    {\n      ...\n    }\n  }\n}\n'),
 																						_1: {
 																							ctor: '::',
-																							_0: _user$project$DataModel$Append('\n[STATE] Entering FairMQ state machine                                                        [250/371]\n[INFO] *************************************************************************************\n[INFO] ***************************     Program options found     ***************************\n[INFO] *************************************************************************************\n[INFO] config-json-file = examples/tutorial-1/config.json  [Type=string]  [provided value] *\n[INFO] id               = sink1                            [Type=string]  [provided value] *\n[INFO] io-threads       = 1                                [Type=int]     [default value]  *\n[INFO] log-color        = 1                                [Type=bool]    [default value]  *\n[INFO] transport        = zeromq                           [Type=string]  [default value]  *\n[INFO] verbose          = DEBUG                            [Type=string]  [default value]  *\n[INFO] *************************************************************************************\n[DEBUG] Found device id \'sampler1\' in JSON input\n[DEBUG] Found device id \'sink1\' in JSON input\n[DEBUG] [node = device]   id = sink1\n[DEBUG]        [node = channel]   name = data\n[DEBUG]                [node = socket]   socket index = 1\n[DEBUG]                        type        = pull\n[DEBUG]                        method      = connect\n[DEBUG]                        address     = tcp://localhost:5555\n[DEBUG]                        sndBufSize  = 1000\n[DEBUG]                        rcvBufSize  = 1000\n[DEBUG]                        rateLogging = 0\n[DEBUG] ---- Channel-keys found are :\n[DEBUG] data\n[INFO] PID: 56198\n[DEBUG] Using ZeroMQ library, version: 4.1.3\n[STATE] Entering INITIALIZING DEVICE state\n[DEBUG] Validating channel \"data[0]\"... VALID\n[DEBUG] Initializing channel data[0] (pull)\n[DEBUG] Connecting channel data[0] to tcp://localhost:5555\n[STATE] Entering DEVICE READY state\n[STATE] Entering INITIALIZING TASK state\n[STATE] Entering READY state\n[STATE] Entering RUNNING state\n[INFO] DEVICE: Running...\n[INFO] Use keys to control the state machine:\n[INFO] [h] help, [p] pause, [r] run, [s] stop, [t] reset task, [d] reset device, [q] end, [j] init task, [i] init device\n'),
+																							_0: _user$project$DataModel$Replace('\n\"id\": \"sampler1\",\n\"channel\":\n{\n    \"name\": \"data\",\n    \"socket\":\n    {\n        \"type\": \"push\",\n        \"method\": \"bind\",\n        \"address\": \"tcp://*:5555\",\n        \"sndBufSize\": \"1000\",\n        \"rcvBufSize\": \"1000\",\n        \"rateLogging\": \"0\"\n    }\n}\n'),
 																							_1: {
 																								ctor: '::',
-																								_0: _user$project$DataModel$ReplaceLast('\n...\n[INFO] Received message \"Hello world\"\n'),
+																								_0: _user$project$DataModel$Single('\n{\n    \"fairMQOptions\":\n    {\n        \"device\":\n        {\n            \"id\": \"sampler1\",\n            \"channel\":\n            {\n                \"name\": \"data\",\n                \"socket\":\n                {\n                    \"type\": \"push\",\n                    \"method\": \"bind\",\n                    \"address\": \"tcp://*:5555\",\n                    \"sndBufSize\": \"1000\",\n                    \"rcvBufSize\": \"1000\",\n                    \"rateLogging\": \"0\"\n                }\n            }\n        },\n\n        \"device\":\n        {\n            \"id\": \"sink1\",\n            \"channel\":\n            {\n                \"name\": \"data\",\n                \"socket\":\n                {\n                    \"type\": \"pull\",\n                    \"method\": \"connect\",\n                    \"address\": \"tcp://localhost:5555\",\n                    \"sndBufSize\": \"1000\",\n                    \"rcvBufSize\": \"1000\",\n                    \"rateLogging\": \"0\"\n                }\n            }\n        }\n    }\n}\n'),
 																								_1: {ctor: '[]'}
 																							}
 																						}
@@ -12791,51 +13048,56 @@ var _user$project$Story$story = {
 																	}),
 																_1: {
 																	ctor: '::',
-																	_0: _user$project$DataModel$SinglePaneStep(
+																	_0: _user$project$DataModel$TwoPanesStep(
 																		{
+																			title: 'Running',
 																			header: _user$project$DataModel$HeaderPane(
 																				{
 																					content: {
 																						ctor: '::',
-																						_0: _user$project$DataModel$Single('\n## Using DDS (Incomplete)\nUsing the configuration file and mapping different ports\nand applications can become complex, especially if you\nplan to run your software in a distributed manner, on a\ncluster. In order to help to these kind of issues the [DDS\nproject](http://dds.gsi.de/doc/nightly/quick-start.html) provides an\neasy way to do deployments which range from a single host to a whole\ncluster.\n    '),
+																						_0: _user$project$DataModel$Single('\nWe can finally run our applications. Simply pass the configuration when\ninvoking them on the command line.\n'),
 																						_1: {
 																							ctor: '::',
-																							_0: _user$project$DataModel$Replace(' ## Using DDS (Incomplete)\nFirst of all make sure DDS is available in your installation.\n'),
+																							_0: _user$project$DataModel$Append('Notice how we also need to provide the id of the device on the command\nline so that it\'s configuration can be picked up from file.'),
+																							_1: {ctor: '[]'}
+																						}
+																					}
+																				}),
+																			leftPane: _user$project$DataModel$ShellPane(
+																				{
+																					content: {
+																						ctor: '::',
+																						_0: _user$project$DataModel$Single('\n$ runSampler --id sampler1 \\\n             --config-json-file examples/tutorial-1/config.json\n      '),
+																						_1: {
+																							ctor: '::',
+																							_0: _user$project$DataModel$Reuse,
 																							_1: {
 																								ctor: '::',
-																								_0: _user$project$DataModel$Append('\nThen we can start the DDS commander via `dds-server` which will\ntake care managing your topology.\n  '),
+																								_0: _user$project$DataModel$Append('\n[STATE] Entering FairMQ state machine\n[INFO] *************************************************************************************\n[INFO] ***************************     Program options found     ***************************\n[INFO] *************************************************************************************\n[INFO] config-json-file = examples/tutorial-1/config.json  [Type=string]  [provided value] *\n[INFO] id               = sampler1                         [Type=string]  [provided value] *\n[INFO] io-threads       = 1                                [Type=int]     [default value]  *\n[INFO] log-color        = 1                                [Type=bool]    [default value]  *\n[INFO] transport        = zeromq                           [Type=string]  [default value]  *\n[INFO] verbose          = DEBUG                            [Type=string]  [default value]  *\n[INFO] *************************************************************************************\n[DEBUG] Found device id \'sampler1\' in JSON input\n[DEBUG] Found device id \'sink1\' in JSON input\n[DEBUG] [node = device]   id = sampler1\n[DEBUG]        [node = channel]   name = data\n[DEBUG]                [node = socket]   socket index = 1\n[DEBUG]                        type        = push\n[DEBUG]                        method      = bind\n[DEBUG]                        address     = tcp://*:5555\n[DEBUG]                        sndBufSize  = 1000\n[DEBUG]                        rcvBufSize  = 1000\n[DEBUG]                        rateLogging = 0\n[DEBUG] ---- Channel-keys found are :\n[DEBUG] data\n[INFO] PID: 41567\n[DEBUG] Using ZeroMQ library, version: 4.1.3\n[STATE] Entering INITIALIZING DEVICE state\n[DEBUG] Validating channel \"data[0]\"... VALID\n[DEBUG] Initializing channel data[0] (push)\n[DEBUG] Binding channel data[0] on tcp://*:5555\n[STATE] Entering DEVICE READY state\n[STATE] Entering INITIALIZING TASK state\n[STATE] Entering READY state\n[STATE] Entering RUNNING state\n[INFO] DEVICE: Running...\n[INFO] Use keys to control the state machine:\n[INFO] [h] help, [p] pause, [r] run, [s] stop, [t] reset task, [d] reset device, [q] end, [j] init task, [i] init device\n'),
 																								_1: {
 																									ctor: '::',
-																									_0: _user$project$DataModel$Append('\nYou can then start the agent using `dds-submit`.\n'),
-																									_1: {
-																										ctor: '::',
-																										_0: _user$project$DataModel$Append('\nYou can check how many agents you have available by running `dds-info -n` and\n`dds-info -l`.\n'),
-																										_1: {ctor: '[]'}
-																									}
+																									_0: _user$project$DataModel$ReplaceLast('\n...\n[INFO] Sending \"Hello world\"\n'),
+																									_1: {ctor: '[]'}
 																								}
 																							}
 																						}
 																					}
 																				}),
-																			pane: _user$project$DataModel$ShellPane(
+																			rightPane: _user$project$DataModel$ShellPane(
 																				{
 																					content: {
 																						ctor: '::',
-																						_0: _user$project$DataModel$Single('\n'),
+																						_0: _user$project$DataModel$Single('\n$ runSink --id sink1 \\\n          --config-json-file examples/tutorial-1/config.json\n'),
 																						_1: {
 																							ctor: '::',
-																							_0: _user$project$DataModel$Single('\n$ pushd $DDS_ROOT ; source DDS_env.sh ; popd\n$ which dds-server\n\n/Users/me/alice/sw/osx_x86-64/DDS/master-1/bin/dds-server\n'),
+																							_0: _user$project$DataModel$Reuse,
 																							_1: {
 																								ctor: '::',
-																								_0: _user$project$DataModel$Append('\n$ dds-server start\nChecking availability of WN bin of the local system...\nfound compatible WN bin: dds-wrk-bin-1.1.21.g93c122a-Darwin-universal.tar.gz\nStarting DDS commander...\n------------------------\nDDS commander server: 18733\n------------------------\n'),
+																								_0: _user$project$DataModel$Append('\n[STATE] Entering FairMQ state machine                                                        [250/371]\n[INFO] *************************************************************************************\n[INFO] ***************************     Program options found     ***************************\n[INFO] *************************************************************************************\n[INFO] config-json-file = examples/tutorial-1/config.json  [Type=string]  [provided value] *\n[INFO] id               = sink1                            [Type=string]  [provided value] *\n[INFO] io-threads       = 1                                [Type=int]     [default value]  *\n[INFO] log-color        = 1                                [Type=bool]    [default value]  *\n[INFO] transport        = zeromq                           [Type=string]  [default value]  *\n[INFO] verbose          = DEBUG                            [Type=string]  [default value]  *\n[INFO] *************************************************************************************\n[DEBUG] Found device id \'sampler1\' in JSON input\n[DEBUG] Found device id \'sink1\' in JSON input\n[DEBUG] [node = device]   id = sink1\n[DEBUG]        [node = channel]   name = data\n[DEBUG]                [node = socket]   socket index = 1\n[DEBUG]                        type        = pull\n[DEBUG]                        method      = connect\n[DEBUG]                        address     = tcp://localhost:5555\n[DEBUG]                        sndBufSize  = 1000\n[DEBUG]                        rcvBufSize  = 1000\n[DEBUG]                        rateLogging = 0\n[DEBUG] ---- Channel-keys found are :\n[DEBUG] data\n[INFO] PID: 56198\n[DEBUG] Using ZeroMQ library, version: 4.1.3\n[STATE] Entering INITIALIZING DEVICE state\n[DEBUG] Validating channel \"data[0]\"... VALID\n[DEBUG] Initializing channel data[0] (pull)\n[DEBUG] Connecting channel data[0] to tcp://localhost:5555\n[STATE] Entering DEVICE READY state\n[STATE] Entering INITIALIZING TASK state\n[STATE] Entering READY state\n[STATE] Entering RUNNING state\n[INFO] DEVICE: Running...\n[INFO] Use keys to control the state machine:\n[INFO] [h] help, [p] pause, [r] run, [s] stop, [t] reset task, [d] reset device, [q] end, [j] init task, [i] init device\n'),
 																								_1: {
 																									ctor: '::',
-																									_0: _user$project$DataModel$Append('\n$ dds-submit --rms ssh -n 2\n'),
-																									_1: {
-																										ctor: '::',
-																										_0: _user$project$DataModel$Append('\n$ dds-info -n\n2\n$ dds-info -l\n -------------->>> 17509308862284875538\nHost Info: me@mycomputer:/tmp/dds-agents/wn_0\nAgent pid: 32012\nAgent UI port: 56028\nAgent startup time: 4.904 s\nState: idle\n\nTask ID: no task is assigned\n -------------->>> 924277658288400321\nHost Info: me@mycomputer:/tmp/dds-agents/wn_1\nAgent pid: 32073\nAgent UI port: 56030\nAgent startup time: 7.411 s\nState: idle\n\nTask ID: no task is assigned\n'),
-																										_1: {ctor: '[]'}
-																									}
+																									_0: _user$project$DataModel$ReplaceLast('\n...\n[INFO] Received message \"Hello world\"\n'),
+																									_1: {ctor: '[]'}
 																								}
 																							}
 																						}
@@ -12844,64 +13106,121 @@ var _user$project$Story$story = {
 																		}),
 																	_1: {
 																		ctor: '::',
-																		_0: _user$project$DataModel$TwoPanesStep(
+																		_0: _user$project$DataModel$SinglePaneStep(
 																			{
+																				title: 'Using DDS (Incomplete)',
 																				header: _user$project$DataModel$HeaderPane(
 																					{
 																						content: {
 																							ctor: '::',
-																							_0: _user$project$DataModel$Single('\n## Using DDS (incomplete)\n\nNow that you have DDS working we need to define the configuration file\nfor the topology.\n'),
-																							_1: {ctor: '[]'}
-																						}
-																					}),
-																				leftPane: _user$project$DataModel$ShellPane(
-																					{
-																						content: {
-																							ctor: '::',
-																							_0: _user$project$DataModel$Single('\n$\n'),
+																							_0: _user$project$DataModel$Single('\nUsing the configuration file and mapping different ports\nand applications can become complex, especially if you\nplan to run your software in a distributed manner, on a\ncluster. In order to help to these kind of issues the [DDS\nproject](http://dds.gsi.de/doc/nightly/quick-start.html) provides an\neasy way to do deployments which range from a single host to a whole\ncluster.\n    '),
 																							_1: {
 																								ctor: '::',
-																								_0: _user$project$DataModel$Replace('\n$ dds-topology --set examples/tutorial-1/topology.xml\ndds-topology: Contacting DDS commander on pb-d-128-141-47-76.cern.ch:20001  ...\ndds-topology: Connection established.\ndds-topology: Requesting server to set a new topology...\n'),
+																								_0: _user$project$DataModel$Replace('\nFirst of all make sure DDS is available in your installation.\n'),
 																								_1: {
 																									ctor: '::',
-																									_0: _user$project$DataModel$Append('\n$ dds-topology --activate\n'),
-																									_1: {ctor: '[]'}
+																									_0: _user$project$DataModel$Append('\nThen we can start the DDS commander via `dds-server` which will\ntake care managing your topology.\n  '),
+																									_1: {
+																										ctor: '::',
+																										_0: _user$project$DataModel$Append('\nYou can then start the agent using `dds-submit`.\n'),
+																										_1: {
+																											ctor: '::',
+																											_0: _user$project$DataModel$Append('\nYou can check how many agents you have available by running `dds-info -n` and\n`dds-info -l`.\n'),
+																											_1: {ctor: '[]'}
+																										}
+																									}
 																								}
 																							}
 																						}
 																					}),
-																				rightPane: _user$project$DataModel$EditorPane(
+																				pane: _user$project$DataModel$ShellPane(
 																					{
 																						content: {
 																							ctor: '::',
-																							_0: _user$project$DataModel$Single('\n<topology id=\"Tutorial\">\n  <property id=\"SamplerPort\" />\n\n  <decltask id=\"Sampler\">\n    <exe reachable=\"false\">runSampler --id sampler1 --config-json-file examples/tutorial-1/config.json</exe>\n  </decltask>\n\n  <decltask id=\"Sink\">\n    <exe reachable=\"false\">runSink --id sink1 --config-json-file examples/tutorial-1/config.json</exe>\n  </decltask>\n\n  <main id=\"main\">\n    <task>Sampler</task>\n    <task>Sink</task>\n  </main>\n</topology>\n    '),
-																							_1: {ctor: '[]'}
-																						},
-																						filename: 'examples/tutorial-1/topology.xml'
+																							_0: _user$project$DataModel$Single('\n'),
+																							_1: {
+																								ctor: '::',
+																								_0: _user$project$DataModel$Single('\n$ pushd $DDS_ROOT ; source DDS_env.sh ; popd\n$ which dds-server\n\n/Users/me/alice/sw/osx_x86-64/DDS/master-1/bin/dds-server\n'),
+																								_1: {
+																									ctor: '::',
+																									_0: _user$project$DataModel$Append('\n$ dds-server start\nChecking availability of WN bin of the local system...\nfound compatible WN bin: dds-wrk-bin-1.1.21.g93c122a-Darwin-universal.tar.gz\nStarting DDS commander...\n------------------------\nDDS commander server: 18733\n------------------------\n'),
+																									_1: {
+																										ctor: '::',
+																										_0: _user$project$DataModel$Append('\n$ dds-submit --rms ssh -n 2\n'),
+																										_1: {
+																											ctor: '::',
+																											_0: _user$project$DataModel$Append('\n$ dds-info -n\n2\n$ dds-info -l\n -------------->>> 17509308862284875538\nHost Info: me@mycomputer:/tmp/dds-agents/wn_0\nAgent pid: 32012\nAgent UI port: 56028\nAgent startup time: 4.904 s\nState: idle\n\nTask ID: no task is assigned\n -------------->>> 924277658288400321\nHost Info: me@mycomputer:/tmp/dds-agents/wn_1\nAgent pid: 32073\nAgent UI port: 56030\nAgent startup time: 7.411 s\nState: idle\n\nTask ID: no task is assigned\n'),
+																											_1: {ctor: '[]'}
+																										}
+																									}
+																								}
+																							}
+																						}
 																					})
 																			}),
 																		_1: {
 																			ctor: '::',
-																			_0: _user$project$DataModel$SinglePaneStep(
+																			_0: _user$project$DataModel$TwoPanesStep(
 																				{
+																					title: 'Using DDS (Incomplete)',
 																					header: _user$project$DataModel$HeaderPane(
 																						{
 																							content: {
 																								ctor: '::',
-																								_0: _user$project$DataModel$Single('## Final words\nIn this tutorial we have seens how to setup your work environment,\nhow to create a couple of FairRoot devices and run them both standalone\nand (soon) using DDS. You are now encouraged to look at the other FairRoot\ntutorials:\n\n<https://github.com/FairRootGroup/FairRoot/tree/master/examples>\n\n'),
+																								_0: _user$project$DataModel$Single('\nNow that you have DDS working we need to define the configuration file\nfor the topology.\n'),
 																								_1: {ctor: '[]'}
 																							}
 																						}),
-																					pane: _user$project$DataModel$ShellPane(
+																					leftPane: _user$project$DataModel$ShellPane(
 																						{
 																							content: {
 																								ctor: '::',
-																								_0: _user$project$DataModel$Single('\n  '),
-																								_1: {ctor: '[]'}
+																								_0: _user$project$DataModel$Single('\n$\n'),
+																								_1: {
+																									ctor: '::',
+																									_0: _user$project$DataModel$Replace('\n$ dds-topology --set examples/tutorial-1/topology.xml\ndds-topology: Contacting DDS commander on pb-d-128-141-47-76.cern.ch:20001  ...\ndds-topology: Connection established.\ndds-topology: Requesting server to set a new topology...\n'),
+																									_1: {
+																										ctor: '::',
+																										_0: _user$project$DataModel$Append('\n$ dds-topology --activate\n'),
+																										_1: {ctor: '[]'}
+																									}
+																								}
 																							}
+																						}),
+																					rightPane: _user$project$DataModel$EditorPane(
+																						{
+																							content: {
+																								ctor: '::',
+																								_0: _user$project$DataModel$Single('\n<topology id=\"Tutorial\">\n  <property id=\"SamplerPort\" />\n\n  <decltask id=\"Sampler\">\n    <exe reachable=\"false\">runSampler --id sampler1 --config-json-file examples/tutorial-1/config.json</exe>\n  </decltask>\n\n  <decltask id=\"Sink\">\n    <exe reachable=\"false\">runSink --id sink1 --config-json-file examples/tutorial-1/config.json</exe>\n  </decltask>\n\n  <main id=\"main\">\n    <task>Sampler</task>\n    <task>Sink</task>\n  </main>\n</topology>\n    '),
+																								_1: {ctor: '[]'}
+																							},
+																							filename: 'examples/tutorial-1/topology.xml'
 																						})
 																				}),
-																			_1: {ctor: '[]'}
+																			_1: {
+																				ctor: '::',
+																				_0: _user$project$DataModel$SinglePaneStep(
+																					{
+																						title: 'Final words',
+																						header: _user$project$DataModel$HeaderPane(
+																							{
+																								content: {
+																									ctor: '::',
+																									_0: _user$project$DataModel$Single('\nIn this tutorial we have seens how to setup your work environment,\nhow to create a couple of FairRoot devices and run them both standalone\nand (soon) using DDS. You are now encouraged to look at the other FairRoot\ntutorials:\n\n<https://github.com/FairRootGroup/FairRoot/tree/master/examples>\n'),
+																									_1: {ctor: '[]'}
+																								}
+																							}),
+																						pane: _user$project$DataModel$ShellPane(
+																							{
+																								content: {
+																									ctor: '::',
+																									_0: _user$project$DataModel$Single('\n  '),
+																									_1: {ctor: '[]'}
+																								}
+																							})
+																					}),
+																				_1: {ctor: '[]'}
+																			}
 																		}
 																	}
 																}
@@ -13058,55 +13377,47 @@ var _user$project$TutorialStyles_Styles$completeStep = _elm_lang$html$Html_Attri
 							_0: {ctor: '_Tuple2', _0: 'background-color', _1: 'rgba(0, 0, 0, 0)'},
 							_1: {
 								ctor: '::',
-								_0: {ctor: '_Tuple2', _0: 'background-image', _1: 'url(https://d13jv82ekraqyq.cloudfront.net/assets/bg-progress-link-filled-550b82cbc81eb5f56ff099f1a7b28b86.png)'},
+								_0: {ctor: '_Tuple2', _0: 'background-origin', _1: 'padding-box'},
 								_1: {
 									ctor: '::',
-									_0: {ctor: '_Tuple2', _0: 'background-origin', _1: 'padding-box'},
+									_0: {ctor: '_Tuple2', _0: 'background-size', _1: 'auto'},
 									_1: {
 										ctor: '::',
-										_0: {ctor: '_Tuple2', _0: 'background-size', _1: 'auto'},
+										_0: {ctor: '_Tuple2', _0: 'color', _1: '#1eb29b'},
 										_1: {
 											ctor: '::',
-											_0: {ctor: '_Tuple2', _0: 'color', _1: 'rgb(85, 26, 139)'},
+											_0: {ctor: '_Tuple2', _0: 'cursor', _1: 'auto'},
 											_1: {
 												ctor: '::',
-												_0: {ctor: '_Tuple2', _0: 'cursor', _1: 'auto'},
+												_0: {ctor: '_Tuple2', _0: 'display', _1: 'block'},
 												_1: {
 													ctor: '::',
-													_0: {ctor: '_Tuple2', _0: 'display', _1: 'block'},
+													_0: {ctor: '_Tuple2', _0: 'float', _1: 'right'},
 													_1: {
 														ctor: '::',
-														_0: {ctor: '_Tuple2', _0: 'float', _1: 'right'},
+														_0: {ctor: '_Tuple2', _0: 'font-family', _1: 'OpenSansRegular, \'Helvetica Neue\', Helvetica, Arial, sans-serif'},
 														_1: {
 															ctor: '::',
-															_0: {ctor: '_Tuple2', _0: 'font-family', _1: 'OpenSansRegular, \'Helvetica Neue\', Helvetica, Arial, sans-serif'},
+															_0: {ctor: '_Tuple2', _0: 'font-size', _1: '10px'},
 															_1: {
 																ctor: '::',
-																_0: {ctor: '_Tuple2', _0: 'font-size', _1: '10px'},
+																_0: {ctor: '_Tuple2', _0: 'height', _1: '24px'},
 																_1: {
 																	ctor: '::',
-																	_0: {ctor: '_Tuple2', _0: 'height', _1: '24px'},
+																	_0: {ctor: '_Tuple2', _0: 'list-style-image', _1: 'none'},
 																	_1: {
 																		ctor: '::',
-																		_0: {ctor: '_Tuple2', _0: 'list-style-image', _1: 'none'},
+																		_0: {ctor: '_Tuple2', _0: 'list-style-position', _1: 'outside'},
 																		_1: {
 																			ctor: '::',
-																			_0: {ctor: '_Tuple2', _0: 'list-style-position', _1: 'outside'},
+																			_0: {ctor: '_Tuple2', _0: 'list-style-type', _1: 'none'},
 																			_1: {
 																				ctor: '::',
-																				_0: {ctor: '_Tuple2', _0: 'list-style-type', _1: 'none'},
+																				_0: {ctor: '_Tuple2', _0: 'text-align', _1: 'left'},
 																				_1: {
 																					ctor: '::',
-																					_0: {ctor: '_Tuple2', _0: 'text-align', _1: 'left'},
-																					_1: {
-																						ctor: '::',
-																						_0: {ctor: '_Tuple2', _0: 'text-decoration', _1: 'none'},
-																						_1: {
-																							ctor: '::',
-																							_0: {ctor: '_Tuple2', _0: 'width', _1: '18px'},
-																							_1: {ctor: '[]'}
-																						}
-																					}
+																					_0: {ctor: '_Tuple2', _0: 'text-decoration', _1: 'none'},
+																					_1: {ctor: '[]'}
 																				}
 																			}
 																		}
@@ -13148,55 +13459,47 @@ var _user$project$TutorialStyles_Styles$incompleteStep = _elm_lang$html$Html_Att
 							_0: {ctor: '_Tuple2', _0: 'background-color', _1: 'rgba(0, 0, 0, 0)'},
 							_1: {
 								ctor: '::',
-								_0: {ctor: '_Tuple2', _0: 'background-image', _1: 'url(https://d13jv82ekraqyq.cloudfront.net/assets/bg-progress-link-00feefaa8cd9a07088d1118deeb4b27b.png)'},
+								_0: {ctor: '_Tuple2', _0: 'background-origin', _1: 'padding-box'},
 								_1: {
 									ctor: '::',
-									_0: {ctor: '_Tuple2', _0: 'background-origin', _1: 'padding-box'},
+									_0: {ctor: '_Tuple2', _0: 'background-size', _1: 'auto'},
 									_1: {
 										ctor: '::',
-										_0: {ctor: '_Tuple2', _0: 'background-size', _1: 'auto'},
+										_0: {ctor: '_Tuple2', _0: 'color', _1: '#5c5c5c'},
 										_1: {
 											ctor: '::',
-											_0: {ctor: '_Tuple2', _0: 'color', _1: 'rgb(0, 0, 238)'},
+											_0: {ctor: '_Tuple2', _0: 'cursor', _1: 'auto'},
 											_1: {
 												ctor: '::',
-												_0: {ctor: '_Tuple2', _0: 'cursor', _1: 'auto'},
+												_0: {ctor: '_Tuple2', _0: 'display', _1: 'block'},
 												_1: {
 													ctor: '::',
-													_0: {ctor: '_Tuple2', _0: 'display', _1: 'block'},
+													_0: {ctor: '_Tuple2', _0: 'float', _1: 'right'},
 													_1: {
 														ctor: '::',
-														_0: {ctor: '_Tuple2', _0: 'float', _1: 'right'},
+														_0: {ctor: '_Tuple2', _0: 'font-family', _1: 'OpenSansRegular, \'Helvetica Neue\', Helvetica, Arial, sans-serif'},
 														_1: {
 															ctor: '::',
-															_0: {ctor: '_Tuple2', _0: 'font-family', _1: 'OpenSansRegular, \'Helvetica Neue\', Helvetica, Arial, sans-serif'},
+															_0: {ctor: '_Tuple2', _0: 'font-size', _1: '10px'},
 															_1: {
 																ctor: '::',
-																_0: {ctor: '_Tuple2', _0: 'font-size', _1: '10px'},
+																_0: {ctor: '_Tuple2', _0: 'height', _1: '24px'},
 																_1: {
 																	ctor: '::',
-																	_0: {ctor: '_Tuple2', _0: 'height', _1: '24px'},
+																	_0: {ctor: '_Tuple2', _0: 'list-style-image', _1: 'none'},
 																	_1: {
 																		ctor: '::',
-																		_0: {ctor: '_Tuple2', _0: 'list-style-image', _1: 'none'},
+																		_0: {ctor: '_Tuple2', _0: 'list-style-position', _1: 'outside'},
 																		_1: {
 																			ctor: '::',
-																			_0: {ctor: '_Tuple2', _0: 'list-style-position', _1: 'outside'},
+																			_0: {ctor: '_Tuple2', _0: 'list-style-type', _1: 'none'},
 																			_1: {
 																				ctor: '::',
-																				_0: {ctor: '_Tuple2', _0: 'list-style-type', _1: 'none'},
+																				_0: {ctor: '_Tuple2', _0: 'text-align', _1: 'left'},
 																				_1: {
 																					ctor: '::',
-																					_0: {ctor: '_Tuple2', _0: 'text-align', _1: 'left'},
-																					_1: {
-																						ctor: '::',
-																						_0: {ctor: '_Tuple2', _0: 'text-decoration', _1: 'none'},
-																						_1: {
-																							ctor: '::',
-																							_0: {ctor: '_Tuple2', _0: 'width', _1: '18px'},
-																							_1: {ctor: '[]'}
-																						}
-																					}
+																					_0: {ctor: '_Tuple2', _0: 'text-decoration', _1: 'none'},
+																					_1: {ctor: '[]'}
 																				}
 																			}
 																		}
@@ -13238,76 +13541,68 @@ var _user$project$TutorialStyles_Styles$stepStyle = _elm_lang$html$Html_Attribut
 							_0: {ctor: '_Tuple2', _0: 'background-color', _1: 'rgba(0, 0, 0, 0)'},
 							_1: {
 								ctor: '::',
-								_0: {ctor: '_Tuple2', _0: 'background-image', _1: 'url(https://d13jv82ekraqyq.cloudfront.net/assets/bg-progress-bar-filled-77f1716a0eefdfeceb005135e8a13705.png)'},
+								_0: {ctor: '_Tuple2', _0: 'background-origin', _1: 'padding-box'},
 								_1: {
 									ctor: '::',
-									_0: {ctor: '_Tuple2', _0: 'background-origin', _1: 'padding-box'},
+									_0: {ctor: '_Tuple2', _0: 'background-size', _1: 'auto'},
 									_1: {
 										ctor: '::',
-										_0: {ctor: '_Tuple2', _0: 'background-size', _1: 'auto'},
+										_0: {ctor: '_Tuple2', _0: 'color', _1: 'rgb(67, 67, 67)'},
 										_1: {
 											ctor: '::',
-											_0: {ctor: '_Tuple2', _0: 'color', _1: 'rgb(67, 67, 67)'},
+											_0: {ctor: '_Tuple2', _0: 'display', _1: 'list-item'},
 											_1: {
 												ctor: '::',
-												_0: {ctor: '_Tuple2', _0: 'display', _1: 'list-item'},
+												_0: {ctor: '_Tuple2', _0: 'float', _1: 'left'},
 												_1: {
 													ctor: '::',
-													_0: {ctor: '_Tuple2', _0: 'float', _1: 'left'},
+													_0: {ctor: '_Tuple2', _0: 'font-family', _1: 'OpenSansRegular, \'Helvetica Neue\', Helvetica, Arial, sans-serif'},
 													_1: {
 														ctor: '::',
-														_0: {ctor: '_Tuple2', _0: 'font-family', _1: 'OpenSansRegular, \'Helvetica Neue\', Helvetica, Arial, sans-serif'},
+														_0: {ctor: '_Tuple2', _0: 'font-size', _1: '10px'},
 														_1: {
 															ctor: '::',
-															_0: {ctor: '_Tuple2', _0: 'font-size', _1: '10px'},
+															_0: {ctor: '_Tuple2', _0: 'height', _1: '24px'},
 															_1: {
 																ctor: '::',
-																_0: {ctor: '_Tuple2', _0: 'height', _1: '24px'},
+																_0: {ctor: '_Tuple2', _0: 'list-style-image', _1: 'none'},
 																_1: {
 																	ctor: '::',
-																	_0: {ctor: '_Tuple2', _0: 'list-style-image', _1: 'none'},
+																	_0: {ctor: '_Tuple2', _0: 'list-style-position', _1: 'outside'},
 																	_1: {
 																		ctor: '::',
-																		_0: {ctor: '_Tuple2', _0: 'list-style-position', _1: 'outside'},
+																		_0: {ctor: '_Tuple2', _0: 'list-style-type', _1: 'none'},
 																		_1: {
 																			ctor: '::',
-																			_0: {ctor: '_Tuple2', _0: 'list-style-type', _1: 'none'},
+																			_0: {ctor: '_Tuple2', _0: 'margin-bottom', _1: '0px'},
 																			_1: {
 																				ctor: '::',
-																				_0: {ctor: '_Tuple2', _0: 'margin-bottom', _1: '0px'},
+																				_0: {ctor: '_Tuple2', _0: 'margin-left', _1: '0px'},
 																				_1: {
 																					ctor: '::',
-																					_0: {ctor: '_Tuple2', _0: 'margin-left', _1: '0px'},
+																					_0: {ctor: '_Tuple2', _0: 'margin-right', _1: '0px'},
 																					_1: {
 																						ctor: '::',
-																						_0: {ctor: '_Tuple2', _0: 'margin-right', _1: '0px'},
+																						_0: {ctor: '_Tuple2', _0: 'margin-top', _1: '0px'},
 																						_1: {
 																							ctor: '::',
-																							_0: {ctor: '_Tuple2', _0: 'margin-top', _1: '0px'},
+																							_0: {ctor: '_Tuple2', _0: 'padding-bottom', _1: '0px'},
 																							_1: {
 																								ctor: '::',
-																								_0: {ctor: '_Tuple2', _0: 'padding-bottom', _1: '0px'},
+																								_0: {ctor: '_Tuple2', _0: 'padding-left', _1: '0px'},
 																								_1: {
 																									ctor: '::',
-																									_0: {ctor: '_Tuple2', _0: 'padding-left', _1: '0px'},
+																									_0: {ctor: '_Tuple2', _0: 'padding-right', _1: '0px'},
 																									_1: {
 																										ctor: '::',
-																										_0: {ctor: '_Tuple2', _0: 'padding-right', _1: '0px'},
+																										_0: {ctor: '_Tuple2', _0: 'padding-top', _1: '0px'},
 																										_1: {
 																											ctor: '::',
-																											_0: {ctor: '_Tuple2', _0: 'padding-top', _1: '0px'},
+																											_0: {ctor: '_Tuple2', _0: 'position', _1: 'relative'},
 																											_1: {
 																												ctor: '::',
-																												_0: {ctor: '_Tuple2', _0: 'position', _1: 'relative'},
-																												_1: {
-																													ctor: '::',
-																													_0: {ctor: '_Tuple2', _0: 'text-align', _1: 'left'},
-																													_1: {
-																														ctor: '::',
-																														_0: {ctor: '_Tuple2', _0: 'width', _1: '36.09375px'},
-																														_1: {ctor: '[]'}
-																													}
-																												}
+																												_0: {ctor: '_Tuple2', _0: 'text-align', _1: 'left'},
+																												_1: {ctor: '[]'}
 																											}
 																										}
 																									}
@@ -13939,12 +14234,145 @@ var _user$project$TutorialStyles_Styles$headerStyle = _elm_lang$html$Html_Attrib
 			}
 		}
 	});
-var _user$project$O2Tutorial$stepKind = F2(
-	function (n, model) {
-		return _elm_lang$core$Native_Utils.eq(n, 0) ? _user$project$TutorialStyles_Styles$completeStep : ((_elm_lang$core$Native_Utils.cmp(n, model.currentStep) > 0) ? _user$project$TutorialStyles_Styles$incompleteStep : _user$project$TutorialStyles_Styles$completeStep);
+var _user$project$O2Tutorial$handleArrows = F2(
+	function (model, a) {
+		var nextPage = A2(
+			_elm_lang$core$Basics$min,
+			A2(_elm_lang$core$Basics$max, 0, model.currentPage + a.x),
+			_elm_lang$core$Array$length(model.slidesIndex) - 1);
+		var index = A2(_elm_lang$core$Array$get, nextPage, model.slidesIndex);
+		var _p0 = index;
+		if (_p0.ctor === 'Just') {
+			return _elm_lang$core$Native_Utils.update(
+				model,
+				{currentPage: nextPage, currentSection: _p0._0.section, currentBuildUp: _p0._0.buildup});
+		} else {
+			return _elm_lang$core$Native_Utils.update(
+				model,
+				{
+					pageError: _elm_lang$core$Maybe$Just(
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							'Page not found',
+							_elm_lang$core$Basics$toString(nextPage)))
+				});
+		}
+	});
+var _user$project$O2Tutorial$handleKeys = F2(
+	function (model, msg) {
+		var pressedKeys = A2(
+			_ohanhi$keyboard_extra$Keyboard_Extra$update,
+			msg,
+			{ctor: '[]'});
+		var arrows = _ohanhi$keyboard_extra$Keyboard_Extra$arrows(pressedKeys);
+		return A2(_user$project$O2Tutorial$handleArrows, model, arrows);
+	});
+var _user$project$O2Tutorial$errorDialog = function (model) {
+	var _p1 = model.pageError;
+	if (_p1.ctor === 'Nothing') {
+		return {ctor: '[]'};
+	} else {
+		return {
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$pre,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text(_p1._0),
+					_1: {ctor: '[]'}
+				}),
+			_1: {ctor: '[]'}
+		};
+	}
+};
+var _user$project$O2Tutorial$currentSectionTitle = function (model) {
+	var currentSlide = A2(_elm_lang$core$Array$get, model.currentSection, model.slides);
+	var _p2 = currentSlide;
+	if (_p2.ctor === 'Just') {
+		var _p3 = _p2._0;
+		switch (_p3.ctor) {
+			case 'ImageStep':
+				return _p3._0.title;
+			case 'TwoPanesStep':
+				return _p3._0.title;
+			default:
+				return _p3._0.title;
+		}
+	} else {
+		return '';
+	}
+};
+var _user$project$O2Tutorial$title = function (model) {
+	var titleStyle = {
+		ctor: '::',
+		_0: {ctor: '_Tuple2', _0: 'font-size', _1: '120%'},
+		_1: {
+			ctor: '::',
+			_0: {ctor: '_Tuple2', _0: 'font-weight', _1: 'bold'},
+			_1: {ctor: '[]'}
+		}
+	};
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$style(
+				{
+					ctor: '::',
+					_0: {ctor: '_Tuple2', _0: 'margin-top', _1: '6px'},
+					_1: {ctor: '[]'}
+				}),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$span,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$style(titleStyle),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text(
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							model.title,
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								' > ',
+								_user$project$O2Tutorial$currentSectionTitle(model)))),
+					_1: {ctor: '[]'}
+				}),
+			_1: {ctor: '[]'}
+		});
+};
+var _user$project$O2Tutorial$stepKind = F3(
+	function (currentSection, currentBuildUp, model) {
+		return (_elm_lang$core$Native_Utils.cmp(currentSection, model.currentSection) > 0) ? _user$project$TutorialStyles_Styles$incompleteStep : ((_elm_lang$core$Native_Utils.eq(currentSection, model.currentSection) && (_elm_lang$core$Native_Utils.cmp(currentBuildUp, model.currentBuildUp) > 0)) ? _user$project$TutorialStyles_Styles$incompleteStep : _user$project$TutorialStyles_Styles$completeStep);
 	});
 var _user$project$O2Tutorial$stepper = function (model) {
-	var navigationButton = function (n) {
+	var navigationButton = function (indexEntry) {
+		var _p4 = indexEntry;
+		var section = _p4.section;
+		var buildup = _p4.buildup;
+		var newHash = A2(
+			_elm_lang$core$Basics_ops['++'],
+			_elm_lang$core$Basics$toString(section),
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				'/',
+				_elm_lang$core$Basics$toString(0)));
+		var stepBullet = function () {
+			var _p5 = buildup;
+			if (_p5 === 0) {
+				return '⬤';
+			} else {
+				return '●';
+			}
+		}();
 		return A2(
 			_elm_lang$html$Html$li,
 			{
@@ -13959,25 +14387,37 @@ var _user$project$O2Tutorial$stepper = function (model) {
 					{
 						ctor: '::',
 						_0: _elm_lang$html$Html_Attributes$href(
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								'#',
-								_elm_lang$core$Basics$toString(n))),
+							A2(_elm_lang$core$Basics_ops['++'], '#!', newHash)),
 						_1: {
 							ctor: '::',
-							_0: A2(_user$project$O2Tutorial$stepKind, n, model),
+							_0: A3(_user$project$O2Tutorial$stepKind, section, buildup, model),
 							_1: {ctor: '[]'}
 						}
 					},
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html$text(
-							_elm_lang$core$Basics$toString(n)),
+						_0: _elm_lang$html$Html$text(stepBullet),
 						_1: {ctor: '[]'}
 					}),
 				_1: {ctor: '[]'}
 			});
 	};
+	var navigationLink = F2(
+		function (model, slide) {
+			return _rgrempel$elm_route_url$RouteUrl_Builder$toUrlChange(
+				A2(
+					_rgrempel$elm_route_url$RouteUrl_Builder$replacePath,
+					{
+						ctor: '::',
+						_0: _elm_lang$core$Basics$toString(model.currentSection),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$core$Basics$toString(model.currentBuildUp),
+							_1: {ctor: '[]'}
+						}
+					},
+					_rgrempel$elm_route_url$RouteUrl_Builder$modifyEntry(_rgrempel$elm_route_url$RouteUrl_Builder$builder)));
+		});
 	var numberOfSlides = _elm_lang$core$Array$length(model.slides);
 	return A2(
 		_elm_lang$html$Html$ol,
@@ -13986,99 +14426,154 @@ var _user$project$O2Tutorial$stepper = function (model) {
 			_0: _user$project$TutorialStyles_Styles$stepperStyle,
 			_1: {ctor: '[]'}
 		},
-		A2(
-			_elm_lang$core$List$map,
-			navigationButton,
-			A2(_elm_lang$core$List$range, 0, numberOfSlides - 1)));
+		_elm_lang$core$Array$toList(
+			A2(_elm_lang$core$Array$map, navigationButton, model.slidesIndex)));
+};
+var _user$project$O2Tutorial$builderForStateFrom = function (model) {
+	return A2(
+		_rgrempel$elm_route_url$RouteUrl_Builder$replacePath,
+		{
+			ctor: '::',
+			_0: _elm_lang$core$Basics$toString(model.currentSection),
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$core$Basics$toString(model.currentBuildUp),
+				_1: {ctor: '[]'}
+			}
+		},
+		_rgrempel$elm_route_url$RouteUrl_Builder$modifyEntry(_rgrempel$elm_route_url$RouteUrl_Builder$builder));
 };
 var _user$project$O2Tutorial$delta2update = F2(
 	function (old, $new) {
-		var same = _elm_lang$core$Native_Utils.eq(old.currentStep, $new.currentStep) && _elm_lang$core$Native_Utils.eq(old.currentBuildUp, $new.currentBuildUp);
-		var _p0 = same;
-		if (_p0 === false) {
+		var builder = _user$project$O2Tutorial$builderForStateFrom($new);
+		var same = _elm_lang$core$Native_Utils.eq(old.currentSection, $new.currentSection) && _elm_lang$core$Native_Utils.eq(old.currentBuildUp, $new.currentBuildUp);
+		var _p6 = same;
+		if (_p6 === false) {
 			return _elm_lang$core$Maybe$Just(
-				_rgrempel$elm_route_url$RouteHash$set(
-					{
-						ctor: '::',
-						_0: _elm_lang$core$Basics$toString($new.currentStep),
-						_1: {
-							ctor: '::',
-							_0: _elm_lang$core$Basics$toString($new.currentBuildUp),
-							_1: {ctor: '[]'}
-						}
-					}));
+				_rgrempel$elm_route_url$RouteUrl_Builder$toHashChange(builder));
 		} else {
 			return _elm_lang$core$Maybe$Nothing;
 		}
 	});
 var _user$project$O2Tutorial$moveToPage = F3(
-	function (page, buildup, model) {
+	function (section, buildup, model) {
 		return _elm_lang$core$Native_Utils.update(
 			model,
-			{currentStep: page, currentBuildUp: buildup});
-	});
-var _user$project$O2Tutorial$handleArrows = F2(
-	function (model, a) {
-		var lastPage = _elm_lang$core$Array$length(model.slides) - 1;
-		var tentativeBuildUp = model.currentBuildUp + a.x;
-		var slides = model.slides;
-		var previousPageMaxBuildUp = A2(_user$project$DataModel$maxSlideBuildUp, model.currentStep - 1, slides);
-		var currentPageMaxBuildUp = A2(_user$project$DataModel$maxSlideBuildUp, model.currentStep, slides);
-		var _p1 = (_elm_lang$core$Native_Utils.cmp(tentativeBuildUp, 0) < 0) ? {ctor: '_Tuple2', _0: model.currentStep - 1, _1: previousPageMaxBuildUp} : ((_elm_lang$core$Native_Utils.cmp(tentativeBuildUp, currentPageMaxBuildUp) > 0) ? {ctor: '_Tuple2', _0: model.currentStep + 1, _1: 0} : {ctor: '_Tuple2', _0: model.currentStep, _1: tentativeBuildUp});
-		var nextPage = _p1._0;
-		var nextBuildUp = _p1._1;
-		var page = (_elm_lang$core$Native_Utils.cmp(nextPage, 0) < 0) ? 0 : ((_elm_lang$core$Native_Utils.cmp(nextPage, lastPage) > -1) ? lastPage : nextPage);
-		var buildup = (_elm_lang$core$Native_Utils.cmp(nextBuildUp, 0) < 0) ? 0 : ((_elm_lang$core$Native_Utils.cmp(nextBuildUp, 10) > 0) ? 10 : nextBuildUp);
-		var nextPageMaxBuildUp = A2(_user$project$DataModel$maxSlideBuildUp, model.currentStep + 1, slides);
-		return A3(_user$project$O2Tutorial$moveToPage, page, buildup, model);
-	});
-var _user$project$O2Tutorial$handleKeys = F2(
-	function (model, msg) {
-		var pressedKeys = A2(
-			_ohanhi$keyboard_extra$Keyboard_Extra$update,
-			msg,
-			{ctor: '[]'});
-		var arrows = _ohanhi$keyboard_extra$Keyboard_Extra$arrows(pressedKeys);
-		return A2(_user$project$O2Tutorial$handleArrows, model, arrows);
+			{currentSection: section, currentBuildUp: buildup});
 	});
 var _user$project$O2Tutorial$update = F2(
 	function (action, model) {
-		var _p2 = action;
-		switch (_p2.ctor) {
+		var _p7 = action;
+		switch (_p7.ctor) {
 			case 'NoOp':
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'MoveToPage':
 				return {
 					ctor: '_Tuple2',
-					_0: A3(_user$project$O2Tutorial$moveToPage, _p2._0, _p2._1, model),
+					_0: A3(_user$project$O2Tutorial$moveToPage, _p7._0, _p7._1, model),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'KeyMsg':
 				return {
 					ctor: '_Tuple2',
-					_0: A2(_user$project$O2Tutorial$handleKeys, model, _p2._0),
+					_0: A2(_user$project$O2Tutorial$handleKeys, model, _p7._0),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'Arrows':
+				return {
+					ctor: '_Tuple2',
+					_0: function (m) {
+						return A3(_user$project$O2Tutorial$moveToPage, m.currentSection, m.currentBuildUp, m);
+					}(
+						A2(_user$project$O2Tutorial$handleArrows, model, _p7._0)),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			default:
 				return {
 					ctor: '_Tuple2',
-					_0: A2(_user$project$O2Tutorial$handleArrows, model, _p2._0),
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							pageError: _elm_lang$core$Maybe$Just(_p7._0)
+						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 		}
 	});
+var _user$project$O2Tutorial$computeBuildupList = function (layout) {
+	return A2(
+		_elm_lang$core$List$range,
+		0,
+		_user$project$DataModel$maxBuildUp(
+			_elm_lang$core$Maybe$Just(layout)) - 1);
+};
+var _user$project$O2Tutorial$computeSlideIndex = function (slides) {
+	var enumeratedSlides = A2(
+		_elm_lang$core$List$indexedMap,
+		F2(
+			function (v0, v1) {
+				return {ctor: '_Tuple2', _0: v0, _1: v1};
+			}),
+		slides);
+	var nestedIndex = A2(
+		_elm_lang$core$List$map,
+		function (_p8) {
+			var _p9 = _p8;
+			return A2(
+				_elm_lang$core$List$map,
+				function (_p10) {
+					var _p11 = _p10;
+					return {ctor: '_Tuple2', _0: _p9._0, _1: _p11._0};
+				},
+				_p9._1);
+		},
+		A2(
+			_elm_lang$core$List$map,
+			function (_p12) {
+				var _p13 = _p12;
+				return {
+					ctor: '_Tuple2',
+					_0: _p13._0,
+					_1: A2(
+						_elm_lang$core$List$indexedMap,
+						F2(
+							function (v0, v1) {
+								return {ctor: '_Tuple2', _0: v0, _1: v1};
+							}),
+						_user$project$O2Tutorial$computeBuildupList(_p13._1))
+				};
+			},
+			enumeratedSlides));
+	return _elm_lang$core$Array$fromList(
+		A2(
+			_elm_lang$core$List$map,
+			function (_p14) {
+				var _p15 = _p14;
+				return {section: _p15._0, buildup: _p15._1};
+			},
+			A2(
+				_elm_lang$core$List$concatMap,
+				function (x) {
+					return x;
+				},
+				nestedIndex)));
+};
 var _user$project$O2Tutorial$model = {
 	pressedKeys: {ctor: '[]'},
-	currentStep: 0,
+	currentPage: 0,
+	currentSection: 0,
 	currentBuildUp: 0,
-	slides: _elm_lang$core$Array$fromList(_user$project$Story$story)
+	title: _user$project$Story$story.title,
+	slides: _elm_lang$core$Array$fromList(_user$project$Story$story.layouts),
+	slidesIndex: _user$project$O2Tutorial$computeSlideIndex(_user$project$Story$story.layouts),
+	pageError: _elm_lang$core$Maybe$Nothing
 };
 var _user$project$O2Tutorial$init = {ctor: '_Tuple2', _0: _user$project$O2Tutorial$model, _1: _elm_lang$core$Platform_Cmd$none};
 var _user$project$O2Tutorial$render = F2(
 	function (buildup, pane) {
 		var $eval = _user$project$DataModel$evaluateBuildUp(buildup);
-		var _p3 = pane;
-		switch (_p3.ctor) {
+		var _p16 = pane;
+		switch (_p16.ctor) {
 			case 'ShellPane':
 				return {
 					ctor: '::',
@@ -14124,7 +14619,7 @@ var _user$project$O2Tutorial$render = F2(
 										'```\n',
 										A2(
 											_elm_lang$core$Basics_ops['++'],
-											$eval(_p3._0.content),
+											$eval(_p16._0.content),
 											'```'))),
 								_1: {ctor: '[]'}
 							}),
@@ -14132,7 +14627,7 @@ var _user$project$O2Tutorial$render = F2(
 					}
 				};
 			case 'EditorPane':
-				var _p4 = _p3._0;
+				var _p17 = _p16._0;
 				return {
 					ctor: '::',
 					_0: A2(
@@ -14153,7 +14648,7 @@ var _user$project$O2Tutorial$render = F2(
 								},
 								{
 									ctor: '::',
-									_0: _elm_lang$html$Html$text(_p4.filename),
+									_0: _elm_lang$html$Html$text(_p17.filename),
 									_1: {ctor: '[]'}
 								}),
 							_1: {ctor: '[]'}
@@ -14185,7 +14680,7 @@ var _user$project$O2Tutorial$render = F2(
 												ctor: '::',
 												_0: _elm_lang$html$Html$text(
 													_elm_lang$core$String$trim(
-														$eval(_p4.content))),
+														$eval(_p17.content))),
 												_1: {ctor: '[]'}
 											}),
 										_1: {ctor: '[]'}
@@ -14201,17 +14696,17 @@ var _user$project$O2Tutorial$render = F2(
 					_0: A2(
 						_evancz$elm_markdown$Markdown$toHtml,
 						{ctor: '[]'},
-						$eval(_p3._0.content)),
+						$eval(_p16._0.content)),
 					_1: {ctor: '[]'}
 				};
 		}
 	});
 var _user$project$O2Tutorial$applyLayout = F2(
 	function (buildup, layout) {
-		var _p5 = layout;
-		switch (_p5.ctor) {
+		var _p18 = layout;
+		switch (_p18.ctor) {
 			case 'SinglePaneStep':
-				var _p6 = _p5._0;
+				var _p19 = _p18._0;
 				return A2(
 					_elm_lang$html$Html$div,
 					{ctor: '[]'},
@@ -14224,7 +14719,7 @@ var _user$project$O2Tutorial$applyLayout = F2(
 								_0: _user$project$TutorialStyles_Styles$headerStyle,
 								_1: {ctor: '[]'}
 							},
-							A2(_user$project$O2Tutorial$render, buildup, _p6.header)),
+							A2(_user$project$O2Tutorial$render, buildup, _p19.header)),
 						_1: {
 							ctor: '::',
 							_0: A2(
@@ -14262,7 +14757,7 @@ var _user$project$O2Tutorial$applyLayout = F2(
 														_0: _elm_lang$html$Html_Attributes$class('pure-u-22-24'),
 														_1: {ctor: '[]'}
 													},
-													A2(_user$project$O2Tutorial$render, buildup, _p6.pane)),
+													A2(_user$project$O2Tutorial$render, buildup, _p19.pane)),
 												_1: {
 													ctor: '::',
 													_0: A2(
@@ -14283,7 +14778,7 @@ var _user$project$O2Tutorial$applyLayout = F2(
 						}
 					});
 			case 'TwoPanesStep':
-				var _p7 = _p5._0;
+				var _p20 = _p18._0;
 				return A2(
 					_elm_lang$html$Html$div,
 					{ctor: '[]'},
@@ -14296,7 +14791,7 @@ var _user$project$O2Tutorial$applyLayout = F2(
 								_0: _user$project$TutorialStyles_Styles$headerStyle,
 								_1: {ctor: '[]'}
 							},
-							A2(_user$project$O2Tutorial$render, buildup, _p7.header)),
+							A2(_user$project$O2Tutorial$render, buildup, _p20.header)),
 						_1: {
 							ctor: '::',
 							_0: A2(
@@ -14342,7 +14837,7 @@ var _user$project$O2Tutorial$applyLayout = F2(
 																}),
 															_1: {ctor: '[]'}
 														},
-														A2(_user$project$O2Tutorial$render, buildup, _p7.leftPane)),
+														A2(_user$project$O2Tutorial$render, buildup, _p20.leftPane)),
 													_1: {ctor: '[]'}
 												}),
 											_1: {
@@ -14368,7 +14863,7 @@ var _user$project$O2Tutorial$applyLayout = F2(
 																	}),
 																_1: {ctor: '[]'}
 															},
-															A2(_user$project$O2Tutorial$render, buildup, _p7.rightPane)),
+															A2(_user$project$O2Tutorial$render, buildup, _p20.rightPane)),
 														_1: {ctor: '[]'}
 													}),
 												_1: {ctor: '[]'}
@@ -14387,7 +14882,7 @@ var _user$project$O2Tutorial$applyLayout = F2(
 						}
 					});
 			default:
-				var _p8 = _p5._0;
+				var _p21 = _p18._0;
 				return A2(
 					_elm_lang$html$Html$div,
 					{ctor: '[]'},
@@ -14400,7 +14895,7 @@ var _user$project$O2Tutorial$applyLayout = F2(
 								_0: _user$project$TutorialStyles_Styles$headerStyle,
 								_1: {ctor: '[]'}
 							},
-							A2(_user$project$O2Tutorial$render, buildup, _p8.header)),
+							A2(_user$project$O2Tutorial$render, buildup, _p21.header)),
 						_1: {
 							ctor: '::',
 							_0: A2(
@@ -14456,7 +14951,7 @@ var _user$project$O2Tutorial$applyLayout = F2(
 														_elm_lang$html$Html$img,
 														{
 															ctor: '::',
-															_0: _elm_lang$html$Html_Attributes$src(_p8.image),
+															_0: _elm_lang$html$Html_Attributes$src(_p21.image),
 															_1: {ctor: '[]'}
 														},
 														{
@@ -14483,15 +14978,15 @@ var _user$project$O2Tutorial$applyLayout = F2(
 		}
 	});
 var _user$project$O2Tutorial$currentBackground = function (model) {
-	var maybeBackground = A2(_elm_lang$core$Array$get, model.currentStep, model.slides);
-	var _p9 = maybeBackground;
-	if (_p9.ctor === 'Just') {
+	var maybeBackground = A2(_elm_lang$core$Array$get, model.currentSection, model.slides);
+	var _p22 = maybeBackground;
+	if (_p22.ctor === 'Just') {
 		return A2(
 			_elm_lang$html$Html$div,
 			{ctor: '[]'},
 			{
 				ctor: '::',
-				_0: A2(_user$project$O2Tutorial$applyLayout, model.currentBuildUp, _p9._0),
+				_0: A2(_user$project$O2Tutorial$applyLayout, model.currentBuildUp, _p22._0),
 				_1: {ctor: '[]'}
 			});
 	} else {
@@ -14527,141 +15022,126 @@ var _user$project$O2Tutorial$stylesheet = function () {
 	var tag = 'link';
 	return A3(_elm_lang$html$Html$node, tag, attrs, children);
 }();
-var _user$project$O2Tutorial$Model = F4(
-	function (a, b, c, d) {
-		return {pressedKeys: a, currentStep: b, currentBuildUp: c, slides: d};
+var _user$project$O2Tutorial$SlideIndexEntry = F2(
+	function (a, b) {
+		return {section: a, buildup: b};
+	});
+var _user$project$O2Tutorial$Model = F8(
+	function (a, b, c, d, e, f, g, h) {
+		return {pressedKeys: a, currentPage: b, currentSection: c, currentBuildUp: d, title: e, slides: f, slidesIndex: g, pageError: h};
 	});
 var _user$project$O2Tutorial$Arrows = function (a) {
 	return {ctor: 'Arrows', _0: a};
 };
-var _user$project$O2Tutorial$title = function (model) {
-	return A2(
-		_elm_lang$html$Html$div,
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$style(
-				{
-					ctor: '::',
-					_0: {ctor: '_Tuple2', _0: 'margin-top', _1: '6px'},
-					_1: {ctor: '[]'}
-				}),
-			_1: {ctor: '[]'}
-		},
-		{
-			ctor: '::',
-			_0: A2(
-				_elm_lang$html$Html$span,
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html_Events$onClick(
-						_user$project$O2Tutorial$Arrows(
-							{x: -1, y: 0})),
-					_1: {
-						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$style(
-							{
-								ctor: '::',
-								_0: {ctor: '_Tuple2', _0: 'margin-right', _1: '10px'},
-								_1: {
-									ctor: '::',
-									_0: {ctor: '_Tuple2', _0: 'cursor', _1: 'pointer'},
-									_1: {ctor: '[]'}
-								}
-							}),
-						_1: {ctor: '[]'}
-					}
-				},
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html$text(
-						_elm_lang$core$String$fromChar(
-							_elm_lang$core$Native_Utils.chr('◀'))),
-					_1: {ctor: '[]'}
-				}),
-			_1: {
+var _user$project$O2Tutorial$arrowNavigator = function (model) {
+	return {
+		ctor: '::',
+		_0: A2(
+			_elm_lang$html$Html$span,
+			{
 				ctor: '::',
-				_0: _elm_lang$html$Html$text(
-					A2(
-						_elm_lang$core$Basics_ops['++'],
-						'Section: ',
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							_elm_lang$core$Basics$toString(model.currentStep),
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								' / Step: ',
-								_elm_lang$core$Basics$toString(model.currentBuildUp))))),
+				_0: _elm_lang$html$Html_Events$onClick(
+					_user$project$O2Tutorial$Arrows(
+						{x: -1, y: 0})),
 				_1: {
 					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$span,
+					_0: _elm_lang$html$Html_Attributes$style(
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html_Events$onClick(
-								_user$project$O2Tutorial$Arrows(
-									{x: 1, y: 0})),
+							_0: {ctor: '_Tuple2', _0: 'margin-right', _1: '10px'},
 							_1: {
 								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$style(
-									{
-										ctor: '::',
-										_0: {ctor: '_Tuple2', _0: 'margin-left', _1: '10px'},
-										_1: {
-											ctor: '::',
-											_0: {ctor: '_Tuple2', _0: 'cursor', _1: 'pointer'},
-											_1: {ctor: '[]'}
-										}
-									}),
+								_0: {ctor: '_Tuple2', _0: 'cursor', _1: 'pointer'},
 								_1: {ctor: '[]'}
 							}
-						},
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html$text(
-								_elm_lang$core$String$fromChar(
-									_elm_lang$core$Native_Utils.chr('▶'))),
-							_1: {ctor: '[]'}
 						}),
 					_1: {ctor: '[]'}
 				}
-			}
-		});
-};
-var _user$project$O2Tutorial$view = function (model) {
-	return A2(
-		_elm_lang$html$Html$div,
-		{ctor: '[]'},
-		{
+			},
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html$text(
+					_elm_lang$core$String$fromChar(
+						_elm_lang$core$Native_Utils.chr('◀'))),
+				_1: {ctor: '[]'}
+			}),
+		_1: {
 			ctor: '::',
-			_0: _user$project$O2Tutorial$stylesheet,
+			_0: _elm_lang$html$Html$text(
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					'Section: ',
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						_elm_lang$core$Basics$toString(model.currentSection),
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							' / Step: ',
+							_elm_lang$core$Basics$toString(model.currentBuildUp))))),
 			_1: {
 				ctor: '::',
 				_0: A2(
-					_elm_lang$html$Html$div,
+					_elm_lang$html$Html$span,
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$class('pure-g'),
+						_0: _elm_lang$html$Html_Events$onClick(
+							_user$project$O2Tutorial$Arrows(
+								{x: 1, y: 0})),
 						_1: {
 							ctor: '::',
-							_0: _user$project$TutorialStyles_Styles$topBarStyle,
+							_0: _elm_lang$html$Html_Attributes$style(
+								{
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'margin-left', _1: '10px'},
+									_1: {
+										ctor: '::',
+										_0: {ctor: '_Tuple2', _0: 'cursor', _1: 'pointer'},
+										_1: {ctor: '[]'}
+									}
+								}),
 							_1: {ctor: '[]'}
 						}
 					},
 					{
 						ctor: '::',
-						_0: A2(
-							_elm_lang$html$Html$div,
-							{
+						_0: _elm_lang$html$Html$text(
+							_elm_lang$core$String$fromChar(
+								_elm_lang$core$Native_Utils.chr('▶'))),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			}
+		}
+	};
+};
+var _user$project$O2Tutorial$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			{
+				ctor: '::',
+				_0: _user$project$O2Tutorial$stylesheet,
+				_1: {ctor: '[]'}
+			},
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				_user$project$O2Tutorial$errorDialog(model),
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class('pure-g'),
+							_1: {
 								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$class('pure-u-1-2'),
+								_0: _user$project$TutorialStyles_Styles$topBarStyle,
 								_1: {ctor: '[]'}
-							},
-							{
-								ctor: '::',
-								_0: _user$project$O2Tutorial$title(model),
-								_1: {ctor: '[]'}
-							}),
-						_1: {
+							}
+						},
+						{
 							ctor: '::',
 							_0: A2(
 								_elm_lang$html$Html$div,
@@ -14672,30 +15152,54 @@ var _user$project$O2Tutorial$view = function (model) {
 								},
 								{
 									ctor: '::',
-									_0: _user$project$O2Tutorial$stepper(model),
+									_0: _user$project$O2Tutorial$title(model),
 									_1: {ctor: '[]'}
 								}),
-							_1: {ctor: '[]'}
-						}
-					}),
-				_1: {
-					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$div,
-						{
-							ctor: '::',
-							_0: _user$project$TutorialStyles_Styles$descriptionStyle,
-							_1: {ctor: '[]'}
-						},
-						{
-							ctor: '::',
-							_0: _user$project$O2Tutorial$currentBackground(model),
-							_1: {ctor: '[]'}
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$div,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$class('pure-u-1-3'),
+										_1: {ctor: '[]'}
+									},
+									{
+										ctor: '::',
+										_0: _user$project$O2Tutorial$stepper(model),
+										_1: {ctor: '[]'}
+									}),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$div,
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$class('pure-u-1-6'),
+											_1: {ctor: '[]'}
+										},
+										_user$project$O2Tutorial$arrowNavigator(model)),
+									_1: {ctor: '[]'}
+								}
+							}
 						}),
-					_1: {ctor: '[]'}
-				}
-			}
-		});
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$div,
+							{
+								ctor: '::',
+								_0: _user$project$TutorialStyles_Styles$descriptionStyle,
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: _user$project$O2Tutorial$currentBackground(model),
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}
+				})));
 };
 var _user$project$O2Tutorial$KeyMsg = function (a) {
 	return {ctor: 'KeyMsg', _0: a};
@@ -14708,47 +15212,56 @@ var _user$project$O2Tutorial$subscriptions = function (model) {
 			_1: {ctor: '[]'}
 		});
 };
-var _user$project$O2Tutorial$main = _elm_lang$html$Html$program(
-	{init: _user$project$O2Tutorial$init, update: _user$project$O2Tutorial$update, view: _user$project$O2Tutorial$view, subscriptions: _user$project$O2Tutorial$subscriptions})();
 var _user$project$O2Tutorial$MoveToPage = F2(
 	function (a, b) {
 		return {ctor: 'MoveToPage', _0: a, _1: b};
 	});
-var _user$project$O2Tutorial$NoOp = {ctor: 'NoOp'};
-var _user$project$O2Tutorial$location2action = function (uriParts) {
-	var _p10 = uriParts;
-	if (_p10.ctor === '::') {
-		if (_p10._1.ctor === '::') {
-			var _p11 = {
+var _user$project$O2Tutorial$UnknownPage = function (a) {
+	return {ctor: 'UnknownPage', _0: a};
+};
+var _user$project$O2Tutorial$location2messages = function (location) {
+	var builder = _rgrempel$elm_route_url$RouteUrl_Builder$fromHash(location.hash);
+	var _p23 = _rgrempel$elm_route_url$RouteUrl_Builder$path(builder);
+	if (_p23.ctor === '::') {
+		if (_p23._1.ctor === '::') {
+			var _p24 = {
 				ctor: '_Tuple2',
-				_0: _elm_lang$core$String$toInt(_p10._0),
-				_1: _elm_lang$core$String$toInt(_p10._1._0)
+				_0: _elm_lang$core$String$toInt(_p23._0),
+				_1: _elm_lang$core$String$toInt(_p23._1._0)
 			};
-			if (((_p11.ctor === '_Tuple2') && (_p11._0.ctor === 'Ok')) && (_p11._1.ctor === 'Ok')) {
+			if (((_p24.ctor === '_Tuple2') && (_p24._0.ctor === 'Ok')) && (_p24._1.ctor === 'Ok')) {
 				return {
 					ctor: '::',
-					_0: A2(_user$project$O2Tutorial$MoveToPage, _p11._0._0, _p11._1._0),
+					_0: A2(_user$project$O2Tutorial$MoveToPage, _p24._0._0, _p24._1._0),
 					_1: {ctor: '[]'}
 				};
 			} else {
 				return {
 					ctor: '::',
-					_0: _user$project$O2Tutorial$NoOp,
+					_0: _user$project$O2Tutorial$UnknownPage(
+						A2(
+							_elm_lang$core$String$join,
+							'/',
+							_rgrempel$elm_route_url$RouteUrl_Builder$path(builder))),
 					_1: {ctor: '[]'}
 				};
 			}
 		} else {
-			var _p12 = _elm_lang$core$String$toInt(_p10._0);
-			if (_p12.ctor === 'Ok') {
+			var _p25 = _elm_lang$core$String$toInt(_p23._0);
+			if (_p25.ctor === 'Ok') {
 				return {
 					ctor: '::',
-					_0: A2(_user$project$O2Tutorial$MoveToPage, _p12._0, 0),
+					_0: A2(_user$project$O2Tutorial$MoveToPage, _p25._0, 0),
 					_1: {ctor: '[]'}
 				};
 			} else {
 				return {
 					ctor: '::',
-					_0: _user$project$O2Tutorial$NoOp,
+					_0: _user$project$O2Tutorial$UnknownPage(
+						A2(
+							_elm_lang$core$String$join,
+							'/',
+							_rgrempel$elm_route_url$RouteUrl_Builder$path(builder))),
 					_1: {ctor: '[]'}
 				};
 			}
@@ -14756,11 +15269,14 @@ var _user$project$O2Tutorial$location2action = function (uriParts) {
 	} else {
 		return {
 			ctor: '::',
-			_0: _user$project$O2Tutorial$NoOp,
+			_0: A2(_user$project$O2Tutorial$MoveToPage, 0, 0),
 			_1: {ctor: '[]'}
 		};
 	}
 };
+var _user$project$O2Tutorial$main = _rgrempel$elm_route_url$RouteUrl$program(
+	{delta2url: _user$project$O2Tutorial$delta2update, location2messages: _user$project$O2Tutorial$location2messages, init: _user$project$O2Tutorial$init, update: _user$project$O2Tutorial$update, view: _user$project$O2Tutorial$view, subscriptions: _user$project$O2Tutorial$subscriptions})();
+var _user$project$O2Tutorial$NoOp = {ctor: 'NoOp'};
 var Elm = {};
 Elm['O2Tutorial'] = Elm['O2Tutorial'] || {};
 if (typeof _user$project$O2Tutorial$main !== 'undefined') {

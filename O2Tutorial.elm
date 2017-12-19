@@ -11,6 +11,9 @@ import Markdown
 import RouteHash
 import Story exposing (..)
 import TutorialStyles.Styles exposing (..)
+import RouteUrl exposing (RouteUrlProgram)
+import RouteUrl.Builder as Builder exposing (Builder)
+import Navigation exposing (Location)
 
 
 stylesheet =
@@ -101,27 +104,63 @@ applyLayout buildup layout =
                 ]
 
 
+type alias SectionIndex =
+    Int
+
+
+type alias BuildUpIndex =
+    Int
+
+
+type alias SlideIndexEntry =
+    { section : SectionIndex
+    , buildup : BuildUpIndex
+    }
+
+
 type alias Model =
     { pressedKeys : List Key
-    , currentStep : Int
-    , currentBuildUp : Int
+    , currentPage : Int
+    , currentSection : SectionIndex
+    , currentBuildUp : BuildUpIndex
+    , title : String
     , slides : Array Layout
+    , slidesIndex : Array SlideIndexEntry
+    , pageError : Maybe String
     }
+
+
+computeBuildupList : Layout -> List Int
+computeBuildupList layout =
+    List.range 0 ((maxBuildUp (Just layout)) - 1)
+
+
+computeSlideIndex : List Layout -> Array SlideIndexEntry
+computeSlideIndex slides =
+    let
+        enumeratedSlides =
+            List.indexedMap (,) slides
+
+        nestedIndex =
+            List.map (\( x, y ) -> ( x, List.indexedMap (,) (computeBuildupList y) )) enumeratedSlides
+                |> List.map (\( x, y ) -> List.map (\( w, z ) -> ( x, w )) y)
+    in
+        List.concatMap (\x -> x) nestedIndex
+            |> List.map (\( x, y ) -> { section = x, buildup = y })
+            |> Array.fromList
 
 
 model : Model
 model =
     { pressedKeys = []
-    , currentStep = 0
+    , currentPage = 0
+    , currentSection = 0
     , currentBuildUp = 0
-    , slides = Array.fromList story
+    , title = story.title
+    , slides = Array.fromList story.layouts
+    , slidesIndex = computeSlideIndex story.layouts
+    , pageError = Maybe.Nothing
     }
-
-
-
--- messages : Signal.Mailbox Msg
--- messages =
---     Signal.mailbox NoOp
 
 
 init : ( Model, Cmd Msg )
@@ -129,81 +168,89 @@ init =
     ( model, Cmd.none )
 
 
+main : RouteUrlProgram Never Model Msg
 main =
-    Html.program
-        { init = init
+    RouteUrl.program
+        { delta2url = delta2update
+        , location2messages = location2messages
+        , init = init
         , update = update
         , view = view
         , subscriptions = subscriptions
         }
 
 
-moveToPage : Int -> Int -> Model -> Model
-moveToPage page buildup model =
-    { model | currentStep = page, currentBuildUp = buildup }
+moveToPage : SectionIndex -> BuildUpIndex -> Model -> Model
+moveToPage section buildup model =
+    { model | currentSection = section, currentBuildUp = buildup }
 
 
 
 -- Hash updates simply are used to move from one step to the other.
 
 
-delta2update : Model -> Model -> Maybe RouteHash.HashUpdate
+builderForStateFrom : Model -> Builder
+builderForStateFrom model =
+    Builder.builder
+        |> Builder.modifyEntry
+        |> Builder.replacePath [ toString model.currentSection, toString model.currentBuildUp ]
+
+
+delta2update : Model -> Model -> Maybe RouteUrl.UrlChange
 delta2update old new =
     let
         same =
-            old.currentStep
-                == new.currentStep
-                && old.currentBuildUp
-                == new.currentBuildUp
+            (old.currentSection == new.currentSection)
+                && (old.currentBuildUp == new.currentBuildUp)
+
+        builder =
+            builderForStateFrom new
     in
         case same of
             False ->
-                Just (RouteHash.set [ toString new.currentStep, toString new.currentBuildUp ])
+                Just (Builder.toHashChange builder)
 
             True ->
                 Maybe.Nothing
 
 
-location2action : List String -> List Msg
-location2action uriParts =
-    case uriParts of
-        page :: buildup :: rest ->
-            case ( String.toInt page, String.toInt buildup ) of
-                ( Ok i, Ok j ) ->
-                    [ MoveToPage i j ]
 
-                _ ->
-                    [ NoOp ]
-
-        page :: rest ->
-            case (String.toInt page) of
-                Ok i ->
-                    [ MoveToPage i 0 ]
-
-                _ ->
-                    [ NoOp ]
-
-        [] ->
-            [ NoOp ]
+-- Parses the Location and creates adeguate Msg
+-- when it changes.
 
 
+location2messages : Location -> List Msg
+location2messages location =
+    let
+        builder =
+            Builder.fromHash location.hash
+    in
+        case Builder.path builder of
+            page :: buildup :: rest ->
+                case ( String.toInt page, String.toInt buildup ) of
+                    ( Ok i, Ok j ) ->
+                        [ MoveToPage i j ]
 
--- port routeTasks : Signal (Task () ())
--- port routeTasks =
---     RouteHash.start
---         { prefix = RouteHash.defaultPrefix
---         , address = messages.address
---         , models = app.model
---         , delta2update = delta2update
---         , location2action = location2action
---         }
+                    _ ->
+                        [ UnknownPage (String.join "/" (Builder.path builder)) ]
+
+            page :: rest ->
+                case (String.toInt page) of
+                    Ok i ->
+                        [ MoveToPage i 0 ]
+
+                    _ ->
+                        [ UnknownPage (String.join "/" (Builder.path builder)) ]
+
+            _ ->
+                [ MoveToPage 0 0 ]
 
 
 currentBackground : Model -> Html Msg
 currentBackground model =
     let
         maybeBackground =
-            get model.currentStep model.slides
+            get model.currentSection model.slides
     in
         case maybeBackground of
             Just slide ->
@@ -213,11 +260,11 @@ currentBackground model =
                 div [] [ text "Error" ]
 
 
-stepKind : Int -> Model -> Attribute msg
-stepKind n model =
-    if n == 0 then
-        completeStep
-    else if n > model.currentStep then
+stepKind : Int -> Int -> Model -> Attribute msg
+stepKind currentSection currentBuildUp model =
+    if currentSection > model.currentSection then
+        incompleteStep
+    else if currentSection == model.currentSection && currentBuildUp > model.currentBuildUp then
         incompleteStep
     else
         completeStep
@@ -229,19 +276,80 @@ stepper model =
         numberOfSlides =
             Array.length (model.slides)
 
-        navigationButton =
-            (\n -> li [ stepStyle ] [ a [ href ("#" ++ (toString n)), stepKind n model ] [ text (toString n) ] ])
+        navigationLink model =
+            \slide ->
+                Builder.builder
+                    |> Builder.modifyEntry
+                    |> Builder.replacePath
+                        [ toString model.currentSection
+                        , toString model.currentBuildUp
+                        ]
+                    |> Builder.toUrlChange
+
+        navigationButton indexEntry =
+            let
+                { section, buildup } =
+                    indexEntry
+
+                newHash =
+                    (toString section) ++ "/" ++ (toString 0)
+
+                stepBullet =
+                    case buildup of
+                        0 ->
+                            "⬤"
+
+                        _ ->
+                            "●"
+            in
+                li [ stepStyle ]
+                    [ a [ href ("#!" ++ newHash), stepKind section buildup model ]
+                        [ text stepBullet ]
+                    ]
     in
-        ol [ stepperStyle ] (List.map navigationButton (List.range 0 (numberOfSlides - 1)))
+        ol [ stepperStyle ] (Array.toList (Array.map navigationButton model.slidesIndex))
+
+
+currentSectionTitle : Model -> String
+currentSectionTitle model =
+    let
+        currentSlide =
+            get model.currentSection model.slides
+    in
+        case currentSlide of
+            Just slide ->
+                case slide of
+                    ImageStep a ->
+                        a.title
+
+                    TwoPanesStep a ->
+                        a.title
+
+                    SinglePaneStep a ->
+                        a.title
+
+            Maybe.Nothing ->
+                ""
+
+
+arrowNavigator model =
+    [ span [ onClick (Arrows { x = -1, y = 0 }), style [ ( "margin-right", "10px" ), ( "cursor", "pointer" ) ] ] [ text (String.fromChar '◀') ]
+    , text ("Section: " ++ toString model.currentSection ++ " / Step: " ++ toString model.currentBuildUp)
+    , span [ onClick (Arrows { x = 1, y = 0 }), style [ ( "margin-left", "10px" ), ( "cursor", "pointer" ) ] ] [ text (String.fromChar '▶') ]
+    ]
 
 
 title : Model -> Html Msg
 title model =
-    div [ style [ ( "margin-top", "6px" ) ] ]
-        [ span [ onClick (Arrows { x = -1, y = 0 }), style [ ( "margin-right", "10px" ), ( "cursor", "pointer" ) ] ] [ text (String.fromChar '◀') ]
-        , text ("Section: " ++ toString model.currentStep ++ " / Step: " ++ toString model.currentBuildUp)
-        , span [ onClick (Arrows { x = 1, y = 0 }), style [ ( "margin-left", "10px" ), ( "cursor", "pointer" ) ] ] [ text (String.fromChar '▶') ]
-        ]
+    let
+        titleStyle =
+            [ ( "font-size", "120%" )
+            , ( "font-weight", "bold" )
+            ]
+    in
+        div [ style [ ( "margin-top", "6px" ) ] ]
+            [ span [ style titleStyle ] [ text (model.title ++ " > " ++ (currentSectionTitle model)) ]
+            ]
 
 
 subscriptions : Model -> Sub Msg
@@ -251,20 +359,34 @@ subscriptions model =
         ]
 
 
+errorDialog : Model -> List (Html Msg)
+errorDialog model =
+    case model.pageError of
+        Maybe.Nothing ->
+            []
+
+        Just error ->
+            [ pre [] [ text error ] ]
+
+
 view : Model -> Html Msg
 view model =
     div []
-        [ stylesheet
-        , div [ class "pure-g", topBarStyle ]
-            [ div [ class "pure-u-1-2" ] [ title model ]
-            , div [ class "pure-u-1-2" ] [ stepper model ]
-            ]
-        , div [ descriptionStyle ] [ currentBackground model ]
-        ]
+        ([ stylesheet ]
+            ++ (errorDialog model)
+            ++ [ div [ class "pure-g", topBarStyle ]
+                    [ div [ class "pure-u-1-2" ] [ title model ]
+                    , div [ class "pure-u-1-3" ] [ stepper model ]
+                    , div [ class "pure-u-1-6" ] (arrowNavigator model)
+                    ]
+               , div [ descriptionStyle ] [ currentBackground model ]
+               ]
+        )
 
 
 type Msg
     = NoOp
+    | UnknownPage String
     | MoveToPage Int Int
     | KeyMsg Keyboard.Extra.Msg
     | Arrows { x : Int, y : Int }
@@ -285,49 +407,24 @@ handleKeys model msg =
 handleArrows : Model -> { x : Int, y : Int } -> Model
 handleArrows model a =
     let
-        slides =
-            model.slides
+        nextPage =
+            Basics.min (Basics.max 0 (model.currentPage + a.x)) (Array.length model.slidesIndex - 1)
 
-        previousPageMaxBuildUp =
-            maxSlideBuildUp (model.currentStep - 1) slides
-
-        currentPageMaxBuildUp =
-            maxSlideBuildUp model.currentStep slides
-
-        nextPageMaxBuildUp =
-            maxSlideBuildUp (model.currentStep + 1) slides
-
-        tentativeBuildUp =
-            model.currentBuildUp + a.x
-
-        ( nextPage, nextBuildUp ) =
-            if tentativeBuildUp < 0 then
-                ( model.currentStep - 1, previousPageMaxBuildUp )
-            else if tentativeBuildUp > currentPageMaxBuildUp then
-                ( model.currentStep + 1, 0 )
-            else
-                ( model.currentStep, tentativeBuildUp )
-
-        lastPage =
-            (Array.length model.slides) - 1
-
-        page =
-            if nextPage < 0 then
-                0
-            else if nextPage >= lastPage then
-                lastPage
-            else
-                nextPage
-
-        buildup =
-            if nextBuildUp < 0 then
-                0
-            else if nextBuildUp > 10 then
-                10
-            else
-                nextBuildUp
+        index =
+            get nextPage model.slidesIndex
     in
-        moveToPage page buildup model
+        case index of
+            Just { section, buildup } ->
+                { model
+                    | currentPage = nextPage
+                    , currentSection = section
+                    , currentBuildUp = buildup
+                }
+
+            Maybe.Nothing ->
+                { model
+                    | pageError = Just ("Page not found" ++ (toString nextPage))
+                }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -343,10 +440,7 @@ update action model =
             ( handleKeys model a, Cmd.none )
 
         Arrows a ->
-            ( handleArrows model a, Cmd.none )
+            ( handleArrows model a |> (\m -> (moveToPage m.currentSection m.currentBuildUp m)), Cmd.none )
 
-
-
--- port currentPage : Int -> Cmd msg
--- port currentPage =
---     Signal.map (\n -> 1) messages.signal
+        UnknownPage a ->
+            ( { model | pageError = Just a }, Cmd.none )

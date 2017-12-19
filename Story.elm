@@ -3,26 +3,34 @@ module Story exposing (..)
 import DataModel exposing (..)
 
 
-story : List Layout
+story : Story
 story =
-    [ SinglePaneStep
-        { header = HeaderPane { content = [ Single """
-## Welcome to the ALICE O2 Primer tutorial.
+    { title = "ALICE O2 Primer"
+    , layouts =
+        [ SinglePaneStep
+            { title = "Welcome"
+            , header =
+                HeaderPane
+                    { content =
+                        [ Single """
 Use arrow keys to navigate.
-""", Replace """
-## Welcome to the ALICE O2 Primer tutorial.
 
+"""
+                        , Replace """
 The purpose of this tutorial is to guide you step by step through the set up of
 your O2 working environment, the creation of your own FairRoot devices and
 their deployment using DDS.
 
 **Now lets get started!**
-""", Append """
+"""
+                        , Append """
 First of all this tutorial assumes you are in `~/alice` and that's
 what we will use as a workarea. Notice that we set the `WORKAREA`
 environment variable to it.
-""" ] }
-        , pane = ShellPane { content = [ Single "\n$\n", Reuse, Replace """
+"""
+                        ]
+                    }
+            , pane = ShellPane { content = [ Single "\n$\n", Reuse, Replace """
 $ mkdir -p ~/alice
 
 $ cd ~/alice
@@ -32,87 +40,81 @@ $ pwd
 
 $ export WORKAREA=$PWD
 """ ] }
-        }
-    , SinglePaneStep
-        { header =
-            HeaderPane
-                { content =
-                    [ Single """
-## Setting up your environment
-
+            }
+        , SinglePaneStep
+            { title = "Building the software"
+            , header =
+                HeaderPane
+                    { content =
+                        [ Single """
 The first thing to do is make sure you have O2 and all
 the required software installed. To do so you can use
 [aliBuild](http://alisw.github.io/alibuild/) a simple script which will
 build everything and provide you with an easy to setup work environment.
 
 """
-                    , Append "alibuild is hosted on Github and you can easily get it using `git clone`."
-                    , Append """
-  Once you have downloaded alibuild itself, you need to download the
-recipes which describe your software distribution, these are maintained in a separate project
-called `alidist`.
+                        , Append """
+aliBuild is hosted on [Github](https://github.com/alibuild) and you can easily get it using `pip`."""
+                        , AppendP """
+Once you have downloaded alibuild itself, you need to download O2 and the recipes to build
+the required externals. This can be done via `aliBuild init`. In this particular case we pick
+up the `dev` branch for it.
 """
-                    , Append """Since in this particular case we want to also develop
-inside O2, we checkout its sources making sure they are at the same
-level as `alidist`. Notice how we pick up the `dev` branch for
-development.
+                        , Replace """
+You can build the software by issuing the `aliBuild build` command.  `aliBuild`
+will try its best to reuse what you have on your system and (eventually)
+download prebuild software instead of recompiling. You can find in depth
+documentation for alibuild at <https://alisw.github.io/alibuild>.
 """
-                    , Replace """
-## Building the software
-
-You can build the software by issuing the `aliBuild build` command.
-`aliBuild` will try its best to reuse what you have on your system and
-(eventually) download prebuild software instead of recompiling. You can find in depth documentation for alibuild at
-<https://alisw.github.io/alibuild>.
-"""
-                    ]
-                }
-        , pane =
-            ShellPane
-                { content =
-                    [ Single """
+                        ]
+                    }
+            , pane =
+                ShellPane
+                    { content =
+                        [ Single """
 $
 """
-                    , Single """
+                        , Single """
 $ pip install --upgrade aliBuild
 """
-                    , Append """
+                        , Append """
 $ aliBuild init O2@dev
 """
-                    , Append """
+                        , Append """
 $ aliBuild build O2
 """
-                    ]
-                }
-        }
-    , SinglePaneStep
-        { header =
-            HeaderPane
-                { content =
-                    [ Single """
-## Directory structure
-
+                        ]
+                    }
+            }
+        , SinglePaneStep
+            { title = "Project structure"
+            , header =
+                HeaderPane
+                    { content =
+                        [ Single """
 After a few minutes of building, aliBuild should finish successfully
-and you should be left with an "sw" folder where the O2 software is
+and you should be left with an `sw` folder where the O2 software is
 installed."""
-                    , Append """Alibuild builds each package in a separate hierarcy
+                        , AppendP """aliBuild builds each package in a separate hierarcy
 `sw/<architecture>/<package>/<version>` where:
 - `<architecture>` is the architecture of your platform (e.g.
-`osx_x86-64`, `slc7_x86-64` or `ubuntu1510_x86-64`)."""
-                    , Append """
+`osx_x86-64`, `slc7_x86-64` or `ubuntu1710_x86-64`)."""
+                        , Append """
 - `<package>` is the name of the package."""
-                    , Append """
+                        , Append """
 - `<version>` is the version of the package.
 """
-                    ]
-                }
-        , pane =
-            ShellPane
-                { content = [ Single """
+                        ]
+                    }
+            , pane =
+                ShellPane
+                    { content =
+                        [ Single """
 $ ls sw
 BUILD       INSTALLROOT MIRROR      SOURCES
 SPECS       TARS        osx_x86-64
-""", Append """
+"""
+                        , Append """
 $ ls sw/osx_x86-64
 AliEn-CAs             GEANT3                MonALISA-gSOAP-client cgal                  nanomsg
 AliEn-Runtime         GEANT4                O2                    defaults-release      protobuf
@@ -121,113 +123,136 @@ AliRoot               GMP                   UUID                  gSOAP         
 ApMon-CPP             GSL                   XRootD                generators            simulation
 DDS                   HepMC                 ZeroMQ                glog                  sodium
 FairRoot              MPFR                  boost                 lhapdf                xalienfs
-""", ReplaceLast """
+"""
+                        , ReplaceLast """
 $ ls sw/osx_x86-64
 ...                   AliPhysics            AliRoot               O2 ...
 
 $ ls sw/osx_x86-64/O2
 latest   master-1 master-2
-""", Append """
+"""
+                        , Append """
 $ ls sw/osx_x86-64/O2/latest
 bin            etc            include        lib            relocate-me.sh share
-""" ]
-                }
-        }
-    , SinglePaneStep
-        { header = HeaderPane { content = [ Single """
-## Setting up the environment
-
+"""
+                        ]
+                    }
+            }
+        , SinglePaneStep
+            { title = "Setting up the environment"
+            , header =
+                HeaderPane
+                    { content =
+                        [ Single """
 Once we have our O2 software built, we need to set up the environment in order to run O2 executables.
-""", Append """
+"""
+                        , Append """
 For each of the packages it builds, alibuild creates a modulefile which can be
 loaded via `alienv`, just like you are used to on lxplus or on the Grid. You
 can use `alienv q` to list the available packages.
-""", Append """ You can use `alienv load` to load the environment for a given
+"""
+                        , Append """
+You can use `alienv load` to load the environment for a given
 package and all its dependencies.
-""", Append """
+"""
+                        , Append """
 You can verify you have the correct environment by looking for some of the pre-built O2 utilities.
-""" ] }
-        , pane = ShellPane { content = [ Single """
+"""
+                        ]
+                    }
+            , pane =
+                ShellPane
+                    { content =
+                        [ Single """
 $ ls sw/osx_x86-64/O2/latest
 bin            etc            include        lib            relocate-me.sh share
-""", Append """
+"""
+                        , Append """
 $ alienv q
-""", Append """
+"""
+                        , Append """
 $ alienv load O2/latest
-""", Append """
+"""
+                        , Append """
 $ which testFlp
 /Users/me/alice/sw/osx_x86-64/O2/master-1/bin/testFlp
 
 $ which dds-server
 /Users/me/alice/sw/osx_x86-64/DDS/master-1/bin/dds-server
-""" ] }
-        }
-    , ImageStep
-        { header = HeaderPane { content = [ Single """
-## O2 / FairRoot architecture : Devices
-
+"""
+                        ]
+                    }
+            }
+        , ImageStep
+            { title = "ALFA architecture : Devices"
+            , header =
+                HeaderPane
+                    { content =
+                        [ Single """
 Let's now try to create a new O2 process which does some sort of
 data-processing. O2 describes processing workflows in terms of so called
 devices. Devices are instances of the `FairMQDevice` class and they
 provide implement computation and communication with other devices.
-""" ] }
-        , image = "device.png"
-        }
-    , ImageStep
-        { header = HeaderPane { content = [ Single """
-
-## O2 / FairRoot architecture : Topologies
-
+""" ]
+                    }
+            , image = "device.png"
+            }
+        , ImageStep
+            { title = "ALFA architecture : Topologies"
+            , header =
+                HeaderPane
+                    { content = [ Single """
 A group of devices can be linked together in what is called a ``topology''.
-""" ] }
-        , image = "topology.png"
-        }
-    , ImageStep
-        { header = HeaderPane { content = [ Single """
-
-## Your first topology
-
+""" ]
+                    }
+            , image = "topology.png"
+            }
+        , ImageStep
+            { title = "Your first topology"
+            , header =
+                HeaderPane
+                    { content =
+                        [ Single """
 To start with, we will construct a simple topology comprising of two devices:
 - a "Sampler" which produces "hello world" objects
 - a "Sink" which consumes them
 
 The source code for this example is at <https://github.com/FairRootGroup/FairRoot/tree/master/examples/MQ/1-sampler-sink>.
-
-""" ] }
-        , image = "sampler-sink.png"
-        }
-    , SinglePaneStep
-        { header = HeaderPane { content = [ Single """
-
-## Creating the package
-
+""" ]
+                    }
+            , image = "sampler-sink.png"
+            }
+        , SinglePaneStep
+            { title = "Creating the package"
+            , header =
+                HeaderPane
+                    { content =
+                        [ Single """
 In order to create our devices, lets first create a package where we put
 all the required sources.
-
-""" ] }
-        , pane = ShellPane { content = [ Single """
+"""
+                        ]
+                    }
+            , pane = ShellPane { content = [ Single """
 $ cd $WORKAREA/O2
 $ mkdir -p examples/tutorial-1
 """ ] }
-        }
-    , TwoPanesStep
-        { header = HeaderPane { content = [ Single """
-
-## The Sampler
-
+            }
+        , TwoPanesStep
+            { title = "The Sampler"
+            , header = HeaderPane { content = [ Single """
 We then create the Sampler. At minimum you will need to implement the
 `Run()` method, which is used to implement the message handling loop of
 the device.
-
 """ ] }
-        , leftPane = ShellPane { content = [ Single """
+            , leftPane = ShellPane { content = [ Single """
 $ cd $WORKAREA/O2
 $ mkdir -p examples/tutorial-1
 $ vim examples/tutorial-1/AliceO2TutorialSampler.h
 """ ] }
-        , rightPane =
-            EditorPane
-                { content = [ Single """
+            , rightPane =
+                EditorPane
+                    { content = [ Single """
 #ifndef ALICEO2TUTORIALSAMPLER_H_
 #define ALICEO2TUTORIALSAMPLER_H_
 
@@ -241,14 +266,12 @@ class AliceO2TutorialSampler : public FairMQDevice
 
 #endif /* ALICEO2TUTORIALSAMPLER_H_ */
 """ ]
-                , filename = "examples/tutorial-1/AliceO2TutorialSampler.h"
-                }
-        }
-    , TwoPanesStep
-        { header = HeaderPane { content = [ Single """
-
-## The Sampler
-
+                    , filename = "examples/tutorial-1/AliceO2TutorialSampler.h"
+                    }
+            }
+        , TwoPanesStep
+            { title = "The Sampler"
+            , header = HeaderPane { content = [ Single """
 We now pass to the implementation of the `Run()` method.
 """, Append """
 First the `Run()` method we will actually make sure you will keep iterating
@@ -259,9 +282,6 @@ then published for subscribers to receive. Notice that by default the message wi
 be deallocated with `free()`. If you need to provide an customized destructor, you will need
 to specify it as an argument of `CreateMessage()`.
 """, ReplaceLastN 3 """
-
-## The Sampler
-
 The full code for our Sampler device is the following. Copy and paste
 it in the correct place. Notice the use of the `LOG(INFO)` facility to
 handle debug / informative messages and the fact that we artificially
@@ -270,16 +290,18 @@ limit the rate to one per second.
 Once we have implemented the sampler class we need to actually create an
 executable which instanciates our device.
 """ ] }
-        , leftPane =
-            ShellPane
-                { content =
-                    [ Single "\n$ vim examples/tutorial-1/AliceO2TutorialSampler.cxx\n"
-                    ]
-                }
-        , rightPane =
-            EditorPane
-                { filename = "examples/tutorial-1/AliceO2TutorialSampler.cxx"
-                , content = [ Single "", Single """
+            , leftPane =
+                ShellPane
+                    { content =
+                        [ Single "\n$ vim examples/tutorial-1/AliceO2TutorialSampler.cxx\n"
+                        ]
+                    }
+            , rightPane =
+                EditorPane
+                    { filename = "examples/tutorial-1/AliceO2TutorialSampler.cxx"
+                    , content =
+                        [ Single ""
+                        , Single """
 ...
 
 void AliceO2TutorialSampler::Run()
@@ -291,7 +313,8 @@ void AliceO2TutorialSampler::Run()
 }
 
 ...
-""", Single """
+"""
+                        , Single """
 ...
 
 char *text = strdup("Hello world");
@@ -301,7 +324,8 @@ std::unique_ptr<FairMQMessage> msg(NewMessage(text, strlen(text)));
 Send(msg, "data");
 
 ...
-""", Single """
+"""
+                        , Single """
 #include <memory>
 
 #include <boost/thread.hpp>
@@ -324,14 +348,16 @@ void AliceO2TutorialSampler::Run()
     Send(msg, "data");
   }
 }
-""" ]
-                }
-        }
-    , TwoPanesStep
-        { header = HeaderPane { content = [ Single """
-
-## The Sink
-
+"""
+                        ]
+                    }
+            }
+        , TwoPanesStep
+            { title = "The sink"
+            , header =
+                HeaderPane
+                    { content =
+                        [ Single """
 Also for the Sink, we must derive from `FairMQDevice` and implement the
 `Run()` method.
 
@@ -339,15 +365,18 @@ In this case the implementation will simply receive the messages and
 print them out. This is done by invoking the `Receive()` method of the
 channel.
 
-""", Append """ The rest of the code is similar to the Sampler one, with
+"""
+                        , Append """ The rest of the code is similar to the Sampler one, with
 the inner loop for the `RUNNING` state.
 
-""" ] }
-        , leftPane =
-            EditorPane
-                { filename = "examples/tutorial-1/AliceO2TutorialSink.h"
-                , content =
-                    [ Single """
+"""
+                        ]
+                    }
+            , leftPane =
+                EditorPane
+                    { filename = "examples/tutorial-1/AliceO2TutorialSink.h"
+                    , content =
+                        [ Single """
 #ifndef ALICEO2TUTORIALSINK_H_
 #define ALICEO2TUTORIALSINK_H_
 
@@ -361,12 +390,12 @@ class AliceO2TutorialSink : public FairMQDevice
 
 #endif /* ALICEO2TUTORIALSINK_H_ */
 """
-                    ]
-                }
-        , rightPane =
-            EditorPane
-                { filename = "examples/tutorial-1/AliceO2TutorialSink.cxx"
-                , content = [ Single """
+                        ]
+                    }
+            , rightPane =
+                EditorPane
+                    { filename = "examples/tutorial-1/AliceO2TutorialSink.cxx"
+                    , content = [ Single """
 ...
 unique_ptr<FairMQMessage> msg(NewMessage());
 
@@ -400,28 +429,21 @@ void AliceO2TutorialSink::Run()
     }
 }
 """ ]
-                }
-        }
-    , SinglePaneStep
-        { header = HeaderPane { content = [ Single """
-
-## Creating the driver processes
-
+                    }
+            }
+        , SinglePaneStep
+            { title = "Creating the driver processes"
+            , header = HeaderPane { content = [ Single """
 Now that we have two classes for our own `FairMQDevice`s, we need to
 create some boilerplate to be able to pass the (optional) arguments and
 launch start the devices. We will call these two executable `runSampler`
 and `runSink` respectively.
-
 """, Replace """
-## Creating the driver processes
-
 First of all the driver is responsible to instanciate the devices and
 the configuration option parser. We call the `CatchSignals()` method
 of the `FairMQDevice` class to make sure that exceptions are properly
 handled as `std::exceptions.`
 """, ReplaceLast """
-## Creating the driver processes
-
 As part of the initialization the driver needs to:
 - Parse the configuration.
 """, Append """- Create the map of channel from the configuration.
@@ -430,10 +452,10 @@ configuration.
 """, Append """- Initialise and transition the state machine until the
 main loop is reached.
 """ ] }
-        , pane =
-            EditorPane
-                { filename = "examples/tutorial-1/runSampler.cxx"
-                , content = [ Single """
+            , pane =
+                EditorPane
+                    { filename = "examples/tutorial-1/runSampler.cxx"
+                    , content = [ Single """
 """, Single """
 ...
 int main(int argc, char** argv)
@@ -480,18 +502,17 @@ sampler.WaitForEndOfState("INIT_TASK");
 sampler.ChangeState("RUN");
 sampler.InteractiveStateLoop();
 """ ]
-                }
-        }
-    , TwoPanesStep
-        { header = HeaderPane { content = [ Single """
-  ## Creating the driver processes
-
+                    }
+            }
+        , TwoPanesStep
+            { title = "Creating the driver processes"
+            , header = HeaderPane { content = [ Single """
   The final sourcecode for the sampler can be found below with the similar one for the sink.
   """ ] }
-        , leftPane =
-            EditorPane
-                { filename = "examples/tutorial-1/runSampler.cxx"
-                , content = [ Single """
+            , leftPane =
+                EditorPane
+                    { filename = "examples/tutorial-1/runSampler.cxx"
+                    , content = [ Single """
 #include <iostream>
 
 #include "boost/program_options.hpp"
@@ -550,11 +571,11 @@ int main(int argc, char** argv)
     return 0;
 }
 """ ]
-                }
-        , rightPane =
-            EditorPane
-                { filename = "examples/tutorial-1/runSink.cxx"
-                , content = [ Single """
+                    }
+            , rightPane =
+                EditorPane
+                    { filename = "examples/tutorial-1/runSink.cxx"
+                    , content = [ Single """
 #include <iostream>
 
 #include "FairMQLogger.h"
@@ -609,20 +630,21 @@ int main(int argc, char** argv)
     return 0;
 }
 """ ]
-                }
-        }
-    , TwoPanesStep
-        { header = HeaderPane { content = [ Single """## Compiling
-
+                    }
+            }
+        , TwoPanesStep
+            { title = "Compiling"
+            , header = HeaderPane { content = [ Single """
 In order to compile in Alice O2 we rely on [CMake](https://cmake.org). You will need
 to add a `examples/tutorial-1/CMakeLists.txt` which specifies how to compile the to Device
 driver processes.
-""", Append """In order to build you need to move to the
-`sw/BUILD/O2-latest/O2` directory and type make.
+""", Append """
+In order to build you need to move to the `sw/BUILD/O2-latest/O2` directory
+and type make.
 """ ] }
-        , leftPane =
-            ShellPane
-                { content = [ Single """
+            , leftPane =
+                ShellPane
+                    { content = [ Single """
 $ vim examples/tutorial-1/CMakeLists.txt
 """, Append """
 $ cd $WORKAREA/sw/BUILD/O2-latest/O2
@@ -646,11 +668,11 @@ $ which runSampler
 $ which runSink
 /Users/me/alice/sw/osx_x86-64/O2/master-1/bin/runSink
 """ ]
-                }
-        , rightPane =
-            EditorPane
-                { filename = "examples/tutorial-1/CMakeLists.txt"
-                , content = [ Single """
+                    }
+            , rightPane =
+                EditorPane
+                    { filename = "examples/tutorial-1/CMakeLists.txt"
+                    , content = [ Single """
 include_directories(
   ${FAIRROOT_ROOT}/include
   ${Boost_INCLUDE_DIR}
@@ -680,33 +702,33 @@ target_link_libraries(runSampler FairMQ
 install(TARGETS runSampler runSink
         RUNTIME DESTINATION bin)
 """ ]
-                }
-        }
-    , TwoPanesStep
-        { header = HeaderPane { content = [ Single """## Configuration
-
+                    }
+            }
+        , TwoPanesStep
+            { title = "Configuration"
+            , header = HeaderPane { content = [ Single """
 Now that we have two devices, we need run them and make sure they are
 configured correctly so that they can talk to each other. This is done via a
 JSON based configuration.
-""", Replace """## Configuration
+""", Replace """
 At the toplevel the configuration has the following structure,
 where there is one `device` stanza for each device we want to run (two
 in our case, one for the sampler and one for the sink).
-""", Replace """## Configuration
+""", Replace """
 At minimum, each of the stanzas will have to specify a unique id for the
 device and the details about its channels, making sure they correspond
 to what is being specified in the C++ code.
 """ ] }
-        , leftPane =
-            ShellPane
-                { content = [ Single """
+            , leftPane =
+                ShellPane
+                    { content = [ Single """
 $ vim examples/tutorial-1/config.json
 """ ]
-                }
-        , rightPane =
-            EditorPane
-                { filename = "examples/tutorial-1/config.json"
-                , content = [ Single "", Single """
+                    }
+            , rightPane =
+                EditorPane
+                    { filename = "examples/tutorial-1/config.json"
+                    , content = [ Single "", Single """
 {
   "fairMQOptions":
   {
@@ -777,25 +799,24 @@ $ vim examples/tutorial-1/config.json
     }
 }
 """ ]
-                }
-        }
-    , TwoPanesStep
-        { header = HeaderPane { content = [ Single """
-## Running
-
+                    }
+            }
+        , TwoPanesStep
+            { title = "Running"
+            , header = HeaderPane { content = [ Single """
 We can finally run our applications. Simply pass the configuration when
 invoking them on the command line.
 """, Append """Notice how we also need to provide the id of the device on the command
 line so that it's configuration can be picked up from file.""" ] }
-        , leftPane =
-            ShellPane
-                { content =
-                    [ Single """
+            , leftPane =
+                ShellPane
+                    { content =
+                        [ Single """
 $ runSampler --id sampler1 \\
              --config-json-file examples/tutorial-1/config.json
       """
-                    , Reuse
-                    , Append """
+                        , Reuse
+                        , Append """
 [STATE] Entering FairMQ state machine
 [INFO] *************************************************************************************
 [INFO] ***************************     Program options found     ***************************
@@ -834,21 +855,21 @@ $ runSampler --id sampler1 \\
 [INFO] Use keys to control the state machine:
 [INFO] [h] help, [p] pause, [r] run, [s] stop, [t] reset task, [d] reset device, [q] end, [j] init task, [i] init device
 """
-                    , ReplaceLast """
+                        , ReplaceLast """
 ...
 [INFO] Sending "Hello world"
 """
-                    ]
-                }
-        , rightPane =
-            ShellPane
-                { content =
-                    [ Single """
+                        ]
+                    }
+            , rightPane =
+                ShellPane
+                    { content =
+                        [ Single """
 $ runSink --id sink1 \\
           --config-json-file examples/tutorial-1/config.json
 """
-                    , Reuse
-                    , Append """
+                        , Reuse
+                        , Append """
 [STATE] Entering FairMQ state machine                                                        [250/371]
 [INFO] *************************************************************************************
 [INFO] ***************************     Program options found     ***************************
@@ -887,19 +908,19 @@ $ runSink --id sink1 \\
 [INFO] Use keys to control the state machine:
 [INFO] [h] help, [p] pause, [r] run, [s] stop, [t] reset task, [d] reset device, [q] end, [j] init task, [i] init device
 """
-                    , ReplaceLast """
+                        , ReplaceLast """
 ...
 [INFO] Received message "Hello world"
 """
-                    ]
-                }
-        }
-    , SinglePaneStep
-        { header =
-            HeaderPane
-                { content =
-                    [ Single """
-## Using DDS (Incomplete)
+                        ]
+                    }
+            }
+        , SinglePaneStep
+            { title = "Using DDS (Incomplete)"
+            , header =
+                HeaderPane
+                    { content =
+                        [ Single """
 Using the configuration file and mapping different ports
 and applications can become complex, especially if you
 plan to run your software in a distributed manner, on a
@@ -908,34 +929,34 @@ project](http://dds.gsi.de/doc/nightly/quick-start.html) provides an
 easy way to do deployments which range from a single host to a whole
 cluster.
     """
-                    , Replace """ ## Using DDS (Incomplete)
+                        , Replace """
 First of all make sure DDS is available in your installation.
 """
-                    , Append """
+                        , Append """
 Then we can start the DDS commander via `dds-server` which will
 take care managing your topology.
   """
-                    , Append """
+                        , Append """
 You can then start the agent using `dds-submit`.
 """
-                    , Append """
+                        , Append """
 You can check how many agents you have available by running `dds-info -n` and
 `dds-info -l`.
 """
-                    ]
-                }
-        , pane =
-            ShellPane
-                { content =
-                    [ Single """
+                        ]
+                    }
+            , pane =
+                ShellPane
+                    { content =
+                        [ Single """
 """
-                    , Single """
+                        , Single """
 $ pushd $DDS_ROOT ; source DDS_env.sh ; popd
 $ which dds-server
 
 /Users/me/alice/sw/osx_x86-64/DDS/master-1/bin/dds-server
 """
-                    , Append """
+                        , Append """
 $ dds-server start
 Checking availability of WN bin of the local system...
 found compatible WN bin: dds-wrk-bin-1.1.21.g93c122a-Darwin-universal.tar.gz
@@ -944,10 +965,10 @@ Starting DDS commander...
 DDS commander server: 18733
 ------------------------
 """
-                    , Append """
+                        , Append """
 $ dds-submit --rms ssh -n 2
 """
-                    , Append """
+                        , Append """
 $ dds-info -n
 2
 $ dds-info -l
@@ -968,36 +989,35 @@ State: idle
 
 Task ID: no task is assigned
 """
-                    ]
-                }
-        }
-    , TwoPanesStep
-        { header = HeaderPane { content = [ Single """
-## Using DDS (incomplete)
-
+                        ]
+                    }
+            }
+        , TwoPanesStep
+            { title = "Using DDS (Incomplete)"
+            , header = HeaderPane { content = [ Single """
 Now that you have DDS working we need to define the configuration file
 for the topology.
 """ ] }
-        , leftPane =
-            ShellPane
-                { content =
-                    [ Single """
+            , leftPane =
+                ShellPane
+                    { content =
+                        [ Single """
 $
 """
-                    , Replace """
+                        , Replace """
 $ dds-topology --set examples/tutorial-1/topology.xml
 dds-topology: Contacting DDS commander on pb-d-128-141-47-76.cern.ch:20001  ...
 dds-topology: Connection established.
 dds-topology: Requesting server to set a new topology...
 """
-                    , Append """
+                        , Append """
 $ dds-topology --activate
 """
-                    ]
-                }
-        , rightPane =
-            EditorPane
-                { content = [ Single """
+                        ]
+                    }
+            , rightPane =
+                EditorPane
+                    { content = [ Single """
 <topology id="Tutorial">
   <property id="SamplerPort" />
 
@@ -1015,23 +1035,24 @@ $ dds-topology --activate
   </main>
 </topology>
     """ ]
-                , filename = "examples/tutorial-1/topology.xml"
-                }
-        }
-    , SinglePaneStep
-        { header = HeaderPane { content = [ Single """## Final words
+                    , filename = "examples/tutorial-1/topology.xml"
+                    }
+            }
+        , SinglePaneStep
+            { title = "Final words"
+            , header = HeaderPane { content = [ Single """
 In this tutorial we have seens how to setup your work environment,
 how to create a couple of FairRoot devices and run them both standalone
 and (soon) using DDS. You are now encouraged to look at the other FairRoot
 tutorials:
 
 <https://github.com/FairRootGroup/FairRoot/tree/master/examples>
-
 """ ] }
-        , pane =
-            ShellPane
-                { content = [ Single """
+            , pane =
+                ShellPane
+                    { content = [ Single """
   """ ]
-                }
-        }
-    ]
+                    }
+            }
+        ]
+    }

@@ -2,7 +2,7 @@ module DataModel exposing (..)
 
 import Html exposing (..)
 import String exposing (join)
-import List exposing (length)
+import List exposing (length, map)
 import Array exposing (Array, get)
 
 
@@ -17,18 +17,38 @@ type Pane
     | HeaderPane { content : List BuildUp }
 
 
+
+{--
+A story is the toplevel name for our tutorial
+--}
+
+
+type alias Story =
+    { title : String
+    , layouts : List Layout
+    }
+
+
+
+{--Layout is a description of the layout of the current slide
+--}
+
+
 type Layout
     = TwoPanesStep
-        { header : Pane
+        { title : String
+        , header : Pane
         , leftPane : Pane
         , rightPane : Pane
         }
     | SinglePaneStep
-        { header : Pane
+        { title : String
+        , header : Pane
         , pane : Pane
         }
     | ImageStep
-        { header : Pane
+        { title : String
+        , header : Pane
         , image : String
         }
 
@@ -47,11 +67,22 @@ type BuildUp
     | Single String
     | Replace String
     | Append String
+    | AppendP String
     | ReplaceLast String
     | ReplaceLastN Int String
 
 
-foldBuildup : BuildUp -> List String -> List String
+simpleBuildUp : List String -> List BuildUp
+simpleBuildUp l =
+    case l of
+        [] ->
+            []
+
+        [ x ] ->
+            [ Single x ]
+
+        x :: xs ->
+            [ Single x ] ++ (List.map Append xs)
 
 
 
@@ -60,6 +91,7 @@ foldBuildup : BuildUp -> List String -> List String
  --}
 
 
+foldBuildup : BuildUp -> List String -> List String
 foldBuildup next acc =
     case next of
         Reuse ->
@@ -74,16 +106,14 @@ foldBuildup next acc =
         Append a ->
             acc ++ [ a ]
 
+        AppendP a ->
+            acc ++ [ "\n\n" ++ a ]
+
         ReplaceLast a ->
             (List.take ((List.length acc) - 1) acc) ++ [ a ]
 
         ReplaceLastN n a ->
             (List.take ((List.length acc) - n) acc) ++ [ a ]
-
-
-maxSlideBuildUp : Int -> Array Layout -> Int
-maxSlideBuildUp i slides =
-    maxBuildUp (get i slides) - 1
 
 
 maxBuildUp : Maybe Layout -> Int

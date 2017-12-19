@@ -209,7 +209,7 @@ stepStyle =
         , ( "background-attachment", "scroll" )
         , ( "background-clip", "border-box" )
         , ( "background-color", "rgba(0, 0, 0, 0)" )
-        , ( "background-image", "url(https://d13jv82ekraqyq.cloudfront.net/assets/bg-progress-bar-filled-77f1716a0eefdfeceb005135e8a13705.png)" )
+          --        , ( "background-image", "url(https://d13jv82ekraqyq.cloudfront.net/assets/bg-progress-bar-filled-77f1716a0eefdfeceb005135e8a13705.png)" )
         , ( "background-origin", "padding-box" )
         , ( "background-size", "auto" )
         , ( "color", "rgb(67, 67, 67)" )
@@ -231,7 +231,7 @@ stepStyle =
         , ( "padding-top", "0px" )
         , ( "position", "relative" )
         , ( "text-align", "left" )
-        , ( "width", "36.09375px" )
+          --       , ( "width", "36.09375px" )
         ]
 
 
@@ -244,10 +244,10 @@ incompleteStep =
         , ( "background-attachment", "scroll" )
         , ( "background-clip", "border-box" )
         , ( "background-color", "rgba(0, 0, 0, 0)" )
-        , ( "background-image", "url(https://d13jv82ekraqyq.cloudfront.net/assets/bg-progress-link-00feefaa8cd9a07088d1118deeb4b27b.png)" )
+          --        , ( "background-image", "url(https://d13jv82ekraqyq.cloudfront.net/assets/bg-progress-link-00feefaa8cd9a07088d1118deeb4b27b.png)" )
         , ( "background-origin", "padding-box" )
         , ( "background-size", "auto" )
-        , ( "color", "rgb(0, 0, 238)" )
+        , ( "color", "#5c5c5c" )
         , ( "cursor", "auto" )
         , ( "display", "block" )
         , ( "float", "right" )
@@ -259,7 +259,7 @@ incompleteStep =
         , ( "list-style-type", "none" )
         , ( "text-align", "left" )
         , ( "text-decoration", "none" )
-        , ( "width", "18px" )
+          --       , ( "width", "18px" )
         ]
 
 
@@ -272,10 +272,10 @@ completeStep =
         , ( "background-attachment", "scroll" )
         , ( "background-clip", "border-box" )
         , ( "background-color", "rgba(0, 0, 0, 0)" )
-        , ( "background-image", "url(https://d13jv82ekraqyq.cloudfront.net/assets/bg-progress-link-filled-550b82cbc81eb5f56ff099f1a7b28b86.png)" )
+          --        , ( "background-image", "url(https://d13jv82ekraqyq.cloudfront.net/assets/bg-progress-link-filled-550b82cbc81eb5f56ff099f1a7b28b86.png)" )
         , ( "background-origin", "padding-box" )
         , ( "background-size", "auto" )
-        , ( "color", "rgb(85, 26, 139)" )
+        , ( "color", "#1eb29b" )
         , ( "cursor", "auto" )
         , ( "display", "block" )
         , ( "float", "right" )
@@ -287,7 +287,7 @@ completeStep =
         , ( "list-style-type", "none" )
         , ( "text-align", "left" )
         , ( "text-decoration", "none" )
-        , ( "width", "18px" )
+          --        , ( "width", "18px" )
         ]
 
 
