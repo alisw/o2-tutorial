@@ -1,6 +1,6 @@
 sudo: true
 script: |
-    curl https://nixos.org/nix/install | sudo sh
+    curl https://nixos.org/nix/install | sh
     nix-build .
 
 cache:
