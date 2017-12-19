@@ -1,8 +1,8 @@
 sudo: true
 script: |
+    export HOME=$PWD
     curl https://nixos.org/nix/install | sh
     . /home/travis/.nix-profile/etc/profile.d/nix.sh
-    export HOME=$PWD
     nix-build .
 
 cache:
