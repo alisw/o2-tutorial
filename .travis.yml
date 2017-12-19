@@ -1,0 +1,19 @@
+sudo: true
+script: |
+    export HOME=$PWD
+    curl https://nixos.org/nix/install | sh
+    sudo chmod 777 /
+    . .nix-profile/etc/profile.d/nix.sh
+    nix-build .
+
+cache:
+    directories:
+      - /nix/store
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_API_TOKEN # Set in travis-ci.org dashboard
+  local_dir: result
+  on:
+    branch: master
