@@ -16,6 +16,6 @@ dist/pure-min.css: pure-min.css
 	cp pure-min.css dist/pure-min.css
 
 dist/elm.js: Story.elm O2Tutorial.elm DataModel.elm TutorialStyles/Styles.elm dist
-	elm-make O2Tutorial.elm -y --output $@
+	elm-make O2Tutorial.elm --yes --output $@
 
 .PHONY: dist publish
