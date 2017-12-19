@@ -3,7 +3,7 @@ script: |
     export HOME=$PWD
     curl https://nixos.org/nix/install | sh
     sudo chmod 777 /
-    . /home/travis/build/ktf/o2-tutorial/.nix-profile/etc/profile.d/nix.sh
+    . .nix-profile/etc/profile.d/nix.sh
     nix-build .
 
 cache:
