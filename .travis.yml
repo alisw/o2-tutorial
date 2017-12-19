@@ -6,7 +6,7 @@ script: |
 
 cache:
     directories:
-      - /nix
+      - /nix/store
 
 deploy:
   provider: pages
