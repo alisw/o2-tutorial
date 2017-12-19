@@ -6,6 +6,10 @@ script: |
     . /home/travis/build/ktf/o2-tutorial/.nix-profile/etc/profile.d/nix.sh
     nix-build .
 
+cache:
+    directories:
+      - /nix/store
+
 deploy:
   provider: pages
   skip_cleanup: true
